@@ -35,13 +35,22 @@ try {
 
     await server.start();
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     app.use(
       helmet({
-        contentSecurityPolicy: false,
+        contentSecurityPolicy: isProduction ? undefined : false,
         crossOriginEmbedderPolicy: false,
       })
     );
 
+    // Minimal liveness probe for Caddy / Docker HEALTHCHECK.
+    // No internal info leaked.
+    app.get("/healthz", (_req, res) => {
+      res.status(200).json({ status: "ok" });
+    });
+
+    // Verbose health for internal dashboards. May reveal mode + tool count.
     app.get("/health", (_req, res) => {
       res.json({
         status: "ok",
@@ -51,16 +60,23 @@ try {
       });
     });
 
-    const corsOrigin = process.env.CORS_ORIGIN
-      ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
-      : "*";
+    const allowedOrigins = process.env.CORS_ORIGIN
+      ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean)
+      : [];
+
+    // Native mobile apps do not send an Origin header. Requests without
+    // Origin are allowed; browser requests must match the allowlist.
+    const corsOptions = {
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error(`CORS: origin ${origin} not allowed`));
+      },
+    };
 
     app.use(
       "/graphql",
-      cors({
-        origin: corsOrigin,
-        credentials: true,
-      }),
+      cors(corsOptions),
       express.json(),
       expressMiddleware(server, {
         context: async ({ req }) => {
