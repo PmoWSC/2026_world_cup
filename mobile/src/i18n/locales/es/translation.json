@@ -1,0 +1,63 @@
+{
+  "tabs": {
+    "chat": "Chat",
+    "polla": "Polla"
+  },
+  "chat": {
+    "placeholder": "Pregunta a Pulpo lo que quieras sobre f\u00fatbol...",
+    "send": "Enviar",
+    "thinking": "Pulpo est\u00e1 pensando...",
+    "welcome_title": "Bienvenido a Pulpo.ai",
+    "welcome_subtitle": "Tu asistente de inteligencia futbol\u00edstica con IA para el Mundial 2026",
+    "rate_limit_prefix": "Te quedan",
+    "rate_limit_exhausted": "Has alcanzado el l\u00edmite de mensajes. Int\u00e9ntalo m\u00e1s tarde."
+  },
+  "polla": {
+    "title": "Polla",
+    "coming_soon": "Pr\u00f3ximamente",
+    "create_group": "Crear Grupo",
+    "join_group": "Unirse a Grupo",
+    "leaderboard": "Clasificaci\u00f3n",
+    "place_bet": "Hacer Predicci\u00f3n",
+    "confirm_prediction": "Confirmar Predicci\u00f3n",
+    "invite": "Invitar Amigos"
+  },
+  "settings": {
+    "title": "Configuraci\u00f3n",
+    "language": "Idioma",
+    "logout": "Cerrar Sesi\u00f3n",
+    "about": "Acerca de",
+    "version": "Versi\u00f3n",
+    "powered_by": "Desarrollado por Pulpo.ai"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo sali\u00f3 mal",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "back": "Volver"
+  },
+  "errors": {
+    "network": "Error de red. Revisa tu conexi\u00f3n.",
+    "auth_required": "Inicia sesi\u00f3n para continuar.",
+    "rate_limited": "Demasiadas solicitudes. Espera un momento.",
+    "unknown": "Ocurri\u00f3 un error inesperado."
+  },
+  "predictions": {
+    "probability": "Probabilidad",
+    "home_win": "Victoria Local",
+    "draw": "Empate",
+    "away_win": "Victoria Visitante",
+    "model_breakdown": "Desglose del Modelo"
+  },
+  "quick_chips": {
+    "live_simulations": "Simulaciones en Vivo",
+    "historical_bias": "Sesgo Hist\u00f3rico",
+    "player_stats": "Estad\u00edsticas de Jugadores",
+    "upcoming_matches": "Pr\u00f3ximos Partidos",
+    "league_standings": "Tabla de Posiciones"
+  }
+}

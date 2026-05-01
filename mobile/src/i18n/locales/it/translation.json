@@ -1,0 +1,63 @@
+{
+  "tabs": {
+    "chat": "Chat",
+    "polla": "Polla"
+  },
+  "chat": {
+    "placeholder": "Chiedi a Pulpo qualsiasi cosa sul calcio...",
+    "send": "Invia",
+    "thinking": "Pulpo sta pensando...",
+    "welcome_title": "Benvenuto su Pulpo.ai",
+    "welcome_subtitle": "Il tuo assistente di intelligenza calcistica con IA per i Mondiali 2026",
+    "rate_limit_prefix": "Hai ancora",
+    "rate_limit_exhausted": "Hai raggiunto il limite di messaggi. Riprova pi\u00f9 tardi."
+  },
+  "polla": {
+    "title": "Polla",
+    "coming_soon": "Prossimamente",
+    "create_group": "Crea Gruppo",
+    "join_group": "Unisciti al Gruppo",
+    "leaderboard": "Classifica",
+    "place_bet": "Fai un Pronostico",
+    "confirm_prediction": "Conferma Pronostico",
+    "invite": "Invita Amici"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": "Lingua",
+    "logout": "Esci",
+    "about": "Informazioni",
+    "version": "Versione",
+    "powered_by": "Sviluppato da Pulpo.ai"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Qualcosa \u00e8 andato storto",
+    "retry": "Riprova",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "save": "Salva",
+    "close": "Chiudi",
+    "back": "Indietro"
+  },
+  "errors": {
+    "network": "Errore di rete. Controlla la connessione.",
+    "auth_required": "Accedi per continuare.",
+    "rate_limited": "Troppe richieste. Attendi un momento.",
+    "unknown": "Si \u00e8 verificato un errore imprevisto."
+  },
+  "predictions": {
+    "probability": "Probabilit\u00e0",
+    "home_win": "Vittoria Casa",
+    "draw": "Pareggio",
+    "away_win": "Vittoria Trasferta",
+    "model_breakdown": "Dettaglio del Modello"
+  },
+  "quick_chips": {
+    "live_simulations": "Simulazioni dal Vivo",
+    "historical_bias": "Tendenza Storica",
+    "player_stats": "Statistiche Giocatori",
+    "upcoming_matches": "Prossime Partite",
+    "league_standings": "Classifica Campionato"
+  }
+}
