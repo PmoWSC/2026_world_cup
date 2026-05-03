@@ -31,7 +31,18 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/SpaceGrotesk-Regular.ttf",
+            "./assets/fonts/SpaceGrotesk-Bold.ttf",
+            "./assets/fonts/Lexend-Light.ttf",
+            "./assets/fonts/Lexend-Regular.ttf",
+            "./assets/fonts/Lexend-Medium.ttf"
+          ]
+        }
+      ],
       "expo-localization",
       "expo-secure-store",
       "expo-sharing"

@@ -1,33 +1,14 @@
-import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../src/apollo/client";
 import "../src/i18n/i18n";
 
-SplashScreen.preventAutoHideAsync();
+// Fonts (Space Grotesk + Lexend) are bundled natively via the expo-font
+// plugin in app.json. They are available from the first frame, so there is
+// no async load, no SplashScreen gate, and no race that can block render.
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
-    "SpaceGrotesk-Regular": require("../assets/fonts/SpaceGrotesk-Regular.ttf"),
-    "SpaceGrotesk-Bold": require("../assets/fonts/SpaceGrotesk-Bold.ttf"),
-    "Lexend-Light": require("../assets/fonts/Lexend-Light.ttf"),
-    "Lexend-Regular": require("../assets/fonts/Lexend-Regular.ttf"),
-    "Lexend-Medium": require("../assets/fonts/Lexend-Medium.ttf"),
-  });
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <ApolloProvider client={client}>
       <Stack
