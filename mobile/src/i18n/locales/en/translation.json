@@ -59,5 +59,14 @@
     "player_stats": "Player Stats",
     "upcoming_matches": "Upcoming Matches",
     "league_standings": "League Standings"
+  },
+  "disclaimer": {
+    "title": "Important",
+    "intro": "Pulpo.ai produces probabilistic predictions about sports events based on historical data, market value, recent form, and other quantitative factors. We do not guarantee outcomes. Predictions are an analytical and entertainment tool — a means, not a result.",
+    "noBetting": "Pulpo.ai is not a betting platform and does not facilitate money transactions or economic incentives. The \"polla\" among friends is a playful scoring system.",
+    "noLiability": "We are not liable for any wagers, bets, or financial decisions made by users based on the app's responses. Use this information at your own risk.",
+    "consent": "By continuing, you accept these terms and our",
+    "privacyLink": "privacy policy",
+    "acceptCta": "I agree"
   }
 }

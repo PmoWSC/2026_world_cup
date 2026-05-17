@@ -59,5 +59,14 @@
     "player_stats": "Estad\u00edsticas de Jugadores",
     "upcoming_matches": "Pr\u00f3ximos Partidos",
     "league_standings": "Tabla de Posiciones"
+  },
+  "disclaimer": {
+    "title": "Importante",
+    "intro": "Pulpo.ai genera predicciones probabil\u00edsticas sobre eventos deportivos a partir de datos hist\u00f3ricos, valor de mercado, forma reciente y otros factores cuantitativos. No garantizamos resultados. Las predicciones son una herramienta de an\u00e1lisis y entretenimiento \u2014 un medio, no un resultado.",
+    "noBetting": "Pulpo.ai no es una plataforma de apuestas y no facilita transacciones de dinero ni incentivos econ\u00f3micos. La \"polla\" entre amigos es un sistema de puntuaci\u00f3n l\u00fadico.",
+    "noLiability": "No nos hacemos responsables por apuestas, pron\u00f3sticos o decisiones econ\u00f3micas que tomes con base en las respuestas de la app. Usa esta informaci\u00f3n bajo tu propio riesgo.",
+    "consent": "Al continuar, aceptas estos t\u00e9rminos y nuestra",
+    "privacyLink": "pol\u00edtica de privacidad",
+    "acceptCta": "Acepto"
   }
 }
