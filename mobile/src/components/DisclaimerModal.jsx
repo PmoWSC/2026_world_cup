@@ -76,6 +76,7 @@ export default function DisclaimerModal({ onAccept }) {
             <Text style={styles.title}>{t.title}</Text>
             <Text style={styles.body}>{t.intro}</Text>
             <Text style={styles.body}>{t.noBetting}</Text>
+            <Text style={styles.body}>{t.noLiability}</Text>
             <Text style={styles.consent}>
               {t.consent}{" "}
               <Text style={styles.link} onPress={openPrivacy}>
