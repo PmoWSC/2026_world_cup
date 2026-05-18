@@ -31,6 +31,26 @@ echo "▶ PULPO.ai Droplet bootstrap — Ubuntu 24.04"
 echo ""
 
 # ---------------------------------------------------------------------------
+# 0.5. Swap file (critical on small droplets — prevents OOM kills)
+# ---------------------------------------------------------------------------
+echo "▶ [0.5] Swap file"
+if [ -f /swapfile ] && swapon --show | grep -q /swapfile; then
+  echo "  ✓ swap already active ($(swapon --show=NAME,SIZE --noheadings))"
+else
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile >/dev/null
+  swapon /swapfile
+  if ! grep -q "^/swapfile" /etc/fstab; then
+    echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  fi
+  echo "  ✓ 2GB swap created and enabled (persists across reboots)"
+fi
+# Lower swappiness so the kernel only swaps under real pressure.
+echo "vm.swappiness=10" > /etc/sysctl.d/99-pulpo-swappiness.conf
+sysctl -p /etc/sysctl.d/99-pulpo-swappiness.conf >/dev/null
+
+# ---------------------------------------------------------------------------
 # 1. System update
 # ---------------------------------------------------------------------------
 echo "▶ [1/8] System update"
