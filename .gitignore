@@ -23,6 +23,13 @@ logs/
 .env.*
 !.env.example
 
+# Infra — local copies of Caddy config and generated keys never go to git.
+# Only the .example template is tracked.
+infra/Caddyfile
+infra/*.key
+infra/*_ed25519
+infra/*_ed25519.pub
+
 # Node.js
 node_modules/
 npm-debug.log*

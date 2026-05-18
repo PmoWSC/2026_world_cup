@@ -73,7 +73,16 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 
 ---
 
-## 5. Cómo trabajar con Claude Code en este repo
+## 5. Comunicación con el usuario
+
+- **Idioma:** responder siempre en **español dialecto colombiano neutro**. Excepción: documentos técnicos (READMEs, código, scripts, archivos `.md` del repo) — el contenido técnico se mantiene en su idioma original, pero la conversación de chat es siempre en español.
+- **Tono:** evitar tecnicismos innecesarios. Si hay que usar un término técnico, explicarlo en una línea la primera vez.
+- **Longitud:** respuestas **cortas y concisas**. Ir al grano. Sin preámbulos largos ni relleno.
+- **Pedir decisiones al usuario:** cuando se necesite una respuesta del usuario para tomar una decisión (elegir entre opciones, confirmar enfoque, resolver ambigüedad), **usar siempre la herramienta `AskUserQuestion`** en vez de listar opciones en texto plano. Excepción única: confirmaciones triviales de una sola línea (ej. "¿Procedo?") inmediatamente después de un plan que el usuario ya leyó.
+
+---
+
+## 6. Cómo trabajar con Claude Code en este repo
 
 - **Usa Plan Mode** (`/plan`) para tareas que tocan más de 2 archivos.
 - **Respeta los permisos** definidos en [.claude/settings.json](.claude/settings.json). Si algo está en `ask`, espera aprobación humana.
@@ -83,7 +92,7 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 
 ---
 
-## 6. Estructura del repo (resumen)
+## 7. Estructura del repo (resumen)
 
 ```
 2026_world_cup/
@@ -102,7 +111,7 @@ Detalle completo: [docs/system/scafold.md](docs/system/scafold.md).
 
 ---
 
-## 7. Contacto y escalación
+## 8. Contacto y escalación
 
 - Cambios en `main`/`staging`/CI → solo lead técnico.
 - Cambios en `db_init/seed.sql` → revisión obligatoria por backend lead.
