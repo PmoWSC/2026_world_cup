@@ -18,7 +18,7 @@ import { colors } from '../../src/styles/colors';
 import { fonts } from '../../src/styles/typography';
 import LeaderboardList from '../../src/components/polla/LeaderboardList';
 
-const TABS = ['Leaderboard', 'Upcoming', 'My Bets'];
+const TABS = ['Leaderboard', 'Upcoming'];
 
 function SegmentControl({ tabs, activeTab, onTabPress }) {
   return (
@@ -111,7 +111,7 @@ export default function GroupDetailScreen() {
     variables: { groupId },
     skip: activeTab !== 'Leaderboard',
   });
-  const leaderboardEntries = (lbData?.leaderboard ?? []).map((entry) => ({
+  const leaderboardEntries = (lbData?.pollaLeaderboard ?? []).map((entry) => ({
     rank: entry.rank,
     displayName: entry.displayName,
     avatarUrl: null,
@@ -198,7 +198,7 @@ export default function GroupDetailScreen() {
                 {item.homeTeam} vs {item.awayTeam}
               </Text>
               <Text style={styles.fixtureDate}>
-                {item.date ? new Date(Number(item.date)).toLocaleDateString() : ''}
+                {item.matchDate ? new Date(Number(item.matchDate)).toLocaleDateString() : ''}
               </Text>
               <Ionicons
                 name="chevron-forward"

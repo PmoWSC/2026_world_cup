@@ -35,7 +35,7 @@ export const GET_FIXTURES = gql`
       homeScore
       awayScore
       status
-      date
+      matchDate
       competition
       matchday
     }
@@ -94,7 +94,7 @@ export const GET_POLLA_GROUPS = gql`
 
 export const GET_LEADERBOARD = gql`
   query GetLeaderboard($groupId: ID!) {
-    leaderboard(groupId: $groupId) {
+    pollaLeaderboard(groupId: $groupId) {
       userId
       displayName
       points

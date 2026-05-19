@@ -94,7 +94,7 @@ export const PLACE_BET = gql`
     $groupId: ID!
     $betTypeSlug: String!
     $fixtureId: ID!
-    $prediction: String!
+    $prediction: JSON!
   ) {
     placeBet(
       groupId: $groupId

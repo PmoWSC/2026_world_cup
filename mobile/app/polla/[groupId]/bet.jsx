@@ -67,7 +67,7 @@ export default function BetScreen() {
   });
   const fixture = fixturesData?.fixtures?.find((f) => f.id === fixtureId) ?? {};
 
-  const countdown = useCountdown(fixture.date);
+  const countdown = useCountdown(fixture.matchDate);
 
   const [placeBet, { loading }] = useMutation(PLACE_BET);
 
@@ -76,9 +76,9 @@ export default function BetScreen() {
       await placeBet({
         variables: {
           groupId,
-          betTypeSlug: 'correct_score',
+          betTypeSlug: 'match:exact_score',
           fixtureId,
-          prediction: `${homeScore}-${awayScore}`,
+          prediction: { home_score: homeScore, away_score: awayScore },
         },
       });
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -92,7 +92,7 @@ export default function BetScreen() {
   };
 
   const isClosingSoon =
-    fixture.date && Number(fixture.date) - Date.now() < 3600000 * 3;
+    fixture.matchDate && Number(fixture.matchDate) - Date.now() < 3600000 * 3;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
