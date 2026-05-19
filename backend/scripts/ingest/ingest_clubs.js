@@ -3,6 +3,7 @@ const { query, fetchFootballData } = require("./utils");
 const COMPETITIONS = [
   { code: "PD", slug: "la_liga_2025", name: "La Liga", type: "league", season: "2025" },
   { code: "PL", slug: "premier_league_2025", name: "Premier League", type: "league", season: "2025" },
+  { code: "CLI", slug: "libertadores_2026", name: "Copa Libertadores", type: "cup", season: "2026" },
 ];
 
 async function ingestClubs() {

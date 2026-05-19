@@ -1,6 +1,6 @@
 const COMPETITION_MODES = {
   league_demo: {
-    competitions: ["la_liga_2025", "premier_league_2025"],
+    competitions: ["la_liga_2025", "premier_league_2025", "libertadores_2026"],
     features: ["chat", "predictions", "polla", "explore"],
     tentacles_enabled: false,
     data_sources: ["football-data.org", "transfermarkt-datasets"],

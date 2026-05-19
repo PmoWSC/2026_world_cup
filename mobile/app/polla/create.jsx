@@ -21,8 +21,9 @@ import { colors, gradients } from '../../src/styles/colors';
 import { fonts } from '../../src/styles/typography';
 
 const COMPETITIONS = [
-  { id: 'la_liga', label: 'La Liga' },
-  { id: 'premier_league', label: 'Premier League' },
+  { id: 'la_liga_2025', label: 'La Liga' },
+  { id: 'premier_league_2025', label: 'Premier League' },
+  { id: 'libertadores_2026', label: 'Copa Libertadores' },
 ];
 
 export default function CreatePollaScreen() {
