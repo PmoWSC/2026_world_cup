@@ -33,6 +33,14 @@ pulpo.white-systems.com {
 		file_server
 	}
 
+	# Guia para testers del beta (TestFlight). El link se comparte
+	# con los amigos invitados a probar la app.
+	handle /testers {
+		root * /var/www/pulpo
+		try_files {path} {path}.html /testers.html
+		file_server
+	}
+
 	# Default: opaque 404. We do not expose anything else.
 	handle {
 		respond "Not Found" 404
