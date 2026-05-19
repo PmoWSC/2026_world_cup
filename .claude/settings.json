@@ -70,7 +70,7 @@
           {
             "type": "command",
             "if": "Bash(git push*)",
-            "command": "CMD=$(jq -r '.tool_input.command // \"\"'); case \"$CMD\" in *\"git push\"*main*|*\"git push\"*master*|*\"git push\"*staging*) echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"BLOQUEADO por politica del proyecto: push directo a main/master/staging prohibido. Crea una rama feature/* o fix/* y abre un Pull Request siguiendo el ciclo Planeacion -> Aprobacion -> Implementacion -> Test -> Entrega.\"}}' ;; esac",
+            "command": "CMD=$(jq -r '.tool_input.command // \"\"'); case \"$CMD\" in *\"git push\"*main*|*\"git push\"*master*|*\"git push\"*staging*) echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"REQUIERE CONFIRMACION: push directo a main/master/staging. Pide OK explicito al usuario antes de proceder. Lo normal sigue siendo PR via rama feature/* o fix/* (ciclo Planeacion -> Aprobacion -> Implementacion -> Test -> Entrega).\"}}' ;; esac",
             "timeout": 5,
             "statusMessage": "Verificando rama destino..."
           }
@@ -83,7 +83,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"PROYECTO: PULPO.ai (2026 World Cup). Lee CLAUDE.md y HOOKS.md antes de empezar. Ciclo obligatorio: Planeacion -> Aprobacion -> Implementacion -> Test -> Entrega. NUNCA push directo a main/staging.\"}}'",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"PROYECTO: PULPO.ai (2026 World Cup). Lee CLAUDE.md y HOOKS.md antes de empezar. Ciclo obligatorio: Planeacion -> Aprobacion -> Implementacion -> Test -> Entrega. Antes de push a main/master/staging consulta al usuario y espera OK explicito (el hook lo marca como ask, no como deny). IDIOMA: espanol colombiano neutro SIN voseo (sin tenes/podes/armas/registrate/etc).\"}}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check_no_voseo.sh",
             "timeout": 5
           }
         ]

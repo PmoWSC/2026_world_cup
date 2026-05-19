@@ -8,7 +8,7 @@ Los hooks son comandos que el harness de Claude Code ejecuta automáticamente en
 
 ## Hooks activos
 
-### 1. `PreToolUse` — Bloquear push a `main` / `master` / `staging`
+### 1. `PreToolUse` — Requerir confirmación para push a `main` / `master` / `staging`
 
 | Campo | Valor |
 |-------|-------|
@@ -18,19 +18,19 @@ Los hooks son comandos que el harness de Claude Code ejecuta automáticamente en
 | Tipo | `command` |
 | Timeout | 5s |
 
-**Qué hace:** intercepta cualquier llamada a la tool `Bash` con un comando `git push` y, si el destino contiene `main`, `master` o `staging`, devuelve un JSON con `permissionDecision: "deny"` y un mensaje explicando la política.
+**Qué hace:** intercepta cualquier llamada a la tool `Bash` con un comando `git push` y, si el destino contiene `main`, `master` o `staging`, devuelve un JSON con `permissionDecision: "ask"` y un mensaje pidiendo confirmación explícita del usuario.
 
 **Comando (resumido):**
 ```bash
 CMD=$(jq -r '.tool_input.command // ""')
 case "$CMD" in
   *"git push"*main*|*"git push"*master*|*"git push"*staging*)
-    echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"BLOQUEADO ..."}}'
+    echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"REQUIERE CONFIRMACION ..."}}'
     ;;
 esac
 ```
 
-**Por qué:** las ramas `main` y `staging` se actualizan exclusivamente vía Pull Request mergeado por un humano. Esto previene pushes accidentales que romperían CI o deployments.
+**Por qué:** las ramas `main` y `staging` se actualizan, por default, vía Pull Request mergeado por un humano. El hook obliga a una pausa con confirmación explícita en los casos en que se necesite hacer push directo (hotfix urgente, sync de rama protegida, etc.), evitando pushes accidentales pero sin bloquear el flujo cuando hay autorización en línea.
 
 **Cómo desactivarlo (solo emergencias documentadas):** editar [.claude/settings.json](.claude/settings.json) y comentar la entrada del hook. Cualquier desactivación debe quedar registrada en commit con justificación.
 
@@ -45,7 +45,7 @@ esac
 | Tipo | `command` |
 | Timeout | 5s |
 
-**Qué hace:** al iniciar la sesión, inyecta un recordatorio en el contexto del modelo: nombre del proyecto, ciclo obligatorio, prohibición de push a main/staging.
+**Qué hace:** al iniciar la sesión, inyecta un recordatorio en el contexto del modelo: nombre del proyecto, ciclo obligatorio, política de consultar antes de push a main/staging.
 
 **Por qué:** garantiza que aún sin haber leído `CLAUDE.md` Claude tenga las reglas críticas de seguridad antes del primer turno.
 

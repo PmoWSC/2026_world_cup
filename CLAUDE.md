@@ -31,13 +31,14 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 ## 3. Reglas duras (hard rules)
 
 ### Git y ramas
-- **NUNCA** `git push` directo a `main`, `master` o `staging`. Hay un hook que lo bloquea — no intentes saltarlo.
+- **Antes de `git push` directo a `main`, `master` o `staging`, consultar al usuario y esperar OK explícito.** Un hook marca estos pushes como `ask` (requieren confirmación), no como bloqueo absoluto. El flujo por default sigue siendo PR vía rama `feature/*` o `fix/*`; el push directo se reserva para casos justificados con autorización en línea.
 - **NUNCA** `--no-verify`, `--no-gpg-sign` o equivalentes para saltar hooks.
 - **NUNCA** `git push --force` o `-f`. Si necesitas reescribir historia compartida, pídelo al usuario.
 - **NUNCA** `git reset --hard` contra ramas remotas (`origin/main`, `origin/staging`).
 - Las ramas de trabajo se nombran `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, `docs/<slug>`.
 - Un commit = una intención. No mezclar refactor con features.
 - Mensaje de commit: imperativo, breve, en español o inglés (consistente con el repo).
+- **SIEMPRE** Responde en espanol de Colombia neutro, nunca uses dialectos diferentes en nin guna de tus respuestas o documentos creados en espanol.
 
 ### Secretos y datos
 - **NUNCA** committear `.env`, `.env.*` (excepto `.env.example`), `credentials.json`, llaves privadas. El `.gitignore` ya los protege — no lo modifiques sin avisar.
