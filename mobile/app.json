@@ -30,7 +30,9 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       }
@@ -64,6 +66,15 @@
       "expo-localization",
       "expo-secure-store",
       "expo-sharing"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "de8cdb55-8984-4081-8ede-4792ad03c259"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/de8cdb55-8984-4081-8ede-4792ad03c259"
+    }
   }
 }
