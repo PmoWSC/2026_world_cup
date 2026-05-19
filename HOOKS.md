@@ -93,6 +93,18 @@ esac
 
 ---
 
+## Regla de idioma (aplica a todo output generado)
+
+**Todo texto que Claude genere — respuestas de chat, documentos, páginas web, comentarios de UI, mensajes de commit, copy de la app — debe estar escrito en español con dialecto colombiano neutro.**
+
+- Forma preferida en docs formales (privacy, términos, manuales): tratamiento de **usted**.
+- Forma preferida en UI / chat con el usuario: **tú** o **usted** según el tono del producto (en Pulpo: **tú**).
+- **No usar voseo** (`tenés`, `podés`, `escribinos`, etc.) — eso es rioplatense, no colombiano neutro.
+- Documentos bilingües (ES + EN) son válidos cuando el público objetivo lo requiere (ej. privacy policy). La porción en español sigue las reglas anteriores; la porción en inglés se mantiene en su redacción original.
+- Excepción única: identificadores técnicos (nombres de variables, funciones, comandos, claves de configuración) se quedan en su idioma original — no se traduce `commit`, `merge`, `healthz`, etc.
+
+---
+
 ## Hooks futuros candidatos (NO implementados)
 
 Estos no están activos pero serían buenos siguientes pasos. Discutir antes de implementar:

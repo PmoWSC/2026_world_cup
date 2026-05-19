@@ -75,7 +75,7 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 
 ## 5. Comunicación con el usuario
 
-- **Idioma:** responder siempre en **español dialecto colombiano neutro**. Excepción: documentos técnicos (READMEs, código, scripts, archivos `.md` del repo) — el contenido técnico se mantiene en su idioma original, pero la conversación de chat es siempre en español.
+- **Idioma:** todo texto que generes — respuestas de chat, documentos, páginas web, copy de la app, mensajes de commit, comentarios de UI — debe estar en **español dialecto colombiano neutro**. Detalles y excepciones (identificadores técnicos, voseo prohibido, tratamiento usted/tú) en [HOOKS.md](HOOKS.md) → sección "Regla de idioma".
 - **Tono:** evitar tecnicismos innecesarios. Si hay que usar un término técnico, explicarlo en una línea la primera vez.
 - **Longitud:** respuestas **cortas y concisas**. Ir al grano. Sin preámbulos largos ni relleno.
 - **Pedir decisiones al usuario:** cuando se necesite una respuesta del usuario para tomar una decisión (elegir entre opciones, confirmar enfoque, resolver ambigüedad), **usar siempre la herramienta `AskUserQuestion`** en vez de listar opciones en texto plano. Excepción única: confirmaciones triviales de una sola línea (ej. "¿Procedo?") inmediatamente después de un plan que el usuario ya leyó.
