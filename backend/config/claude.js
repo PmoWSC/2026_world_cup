@@ -172,13 +172,14 @@ const COMPETITION_LABELS = {
 
 function buildSystemPrompt(language, languageName) {
   const competitionsLabel = activeConfig.competitions
-    .map((slug) => COMPETITION_LABELS[slug] || slug)
+    .map((slug) => `\`${slug}\` — ${COMPETITION_LABELS[slug] || slug}`)
     .join("; ");
+  const validSlugs = activeConfig.competitions.join(", ");
 
   const modeInstructions =
     ACTIVE_MODE === "world_cup"
       ? `You cover the 2026 FIFA World Cup. Reference all WC data + tentacle factors.`
-      : `You cover the following competitions: ${competitionsLabel}. Reference current season data. When asked about upcoming matches, use the get_fixtures tool with the appropriate competition slug.`;
+      : `You cover the following competitions (use the exact slug shown in backticks when calling tools): ${competitionsLabel}. Reference current season data. When asked about upcoming matches, call the get_fixtures tool with one of these slugs ONLY: ${validSlugs}. Never invent or guess slug variants.`;
 
   return `You are Pulpo, the Football Oracle.
 Respond in ${languageName} (code: ${language}).
