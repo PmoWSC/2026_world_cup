@@ -163,11 +163,22 @@ const TOOL_DEFINITIONS = [
   },
 ];
 
+const COMPETITION_LABELS = {
+  la_liga_2025: "La Liga 2025-2026 (Spain)",
+  premier_league_2025: "Premier League 2025-2026 (England)",
+  libertadores_2026: "Copa Libertadores 2026 (CONMEBOL, includes Colombian clubs)",
+  world_cup_2026: "2026 FIFA World Cup",
+};
+
 function buildSystemPrompt(language, languageName) {
+  const competitionsLabel = activeConfig.competitions
+    .map((slug) => COMPETITION_LABELS[slug] || slug)
+    .join("; ");
+
   const modeInstructions =
     ACTIVE_MODE === "world_cup"
-      ? "You cover the 2026 FIFA World Cup. Reference all WC data + tentacle factors."
-      : "You cover La Liga and Premier League. Reference current season data.";
+      ? `You cover the 2026 FIFA World Cup. Reference all WC data + tentacle factors.`
+      : `You cover the following competitions: ${competitionsLabel}. Reference current season data. When asked about upcoming matches, use the get_fixtures tool with the appropriate competition slug.`;
 
   return `You are Pulpo, the Football Oracle.
 Respond in ${languageName} (code: ${language}).
