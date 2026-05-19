@@ -41,13 +41,17 @@ git checkout "$DEPLOY_REF"
 git pull --ff-only origin "$DEPLOY_REF"
 
 echo "▶ [2/4] docker compose up (with prod overlay)"
+# --env-file: docker compose substitutes ${POSTGRES_USER} etc. from backend/.env
+# (without this flag, compose only reads a root-level .env and postgres starts
+# with empty credentials).
 docker compose \
+  --env-file ./backend/.env \
   -f docker-compose.yml \
   -f docker-compose.prod.yml \
   up -d --build
 
 echo "▶ [3/4] containers"
-docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+docker compose --env-file ./backend/.env -f docker-compose.yml -f docker-compose.prod.yml ps
 
 echo "▶ [4/4] smoke test: $HEALTH_URL"
 # Wait up to 30s for /healthz to respond (container start_period is 30s).
@@ -64,5 +68,5 @@ for i in $(seq 1 15); do
 done
 
 echo "✗ Healthcheck failed after 30s. Last container logs:" >&2
-docker compose -f docker-compose.yml -f docker-compose.prod.yml logs backend --tail=40 >&2
+docker compose --env-file ./backend/.env -f docker-compose.yml -f docker-compose.prod.yml logs backend --tail=40 >&2
 exit 1
