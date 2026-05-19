@@ -41,6 +41,13 @@ pulpo.white-systems.com {
 		file_server
 	}
 
+	# Assets compartidos por las paginas estaticas (logos, etc.).
+	# La privacy y la testers guide los referencian.
+	handle /user_manual/* {
+		root * /var/www/pulpo
+		file_server
+	}
+
 	# Default: opaque 404. We do not expose anything else.
 	handle {
 		respond "Not Found" 404
