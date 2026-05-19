@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider as BaseApol
 import { setContext } from '@apollo/client/link/context';
 import { useAuthStore } from '../store/authStore';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:4000/graphql';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://pulpo.white-systems.com/graphql';
 
 const httpLink = createHttpLink({ uri: API_URL });
 
