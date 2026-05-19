@@ -59,6 +59,15 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 - Validar entrada de usuario en resolvers GraphQL. Nunca confiar en `prediction: JSON!` sin sanitizar.
 - Rate limiting sigue activo en chat ([backend/utils/rate_limiter.js](backend/utils/rate_limiter.js)). No bypassearlo en pruebas que toquen prod.
 
+### Idioma (regla dura — sin excepciones)
+- **TODO** texto en español que generes — respuestas de chat, docs, páginas web, copy de la app, mensajes de commit, comentarios de UI, `What to Test` de TestFlight, etc. — debe estar en **español dialecto colombiano neutro**.
+- **PROHIBIDO usar voseo argentino/rioplatense.** Lista no exhaustiva de formas que **NUNCA** debes usar: `tenés`, `podés`, `sabés`, `querés`, `decís`, `vos`, `sos`, `armá`, `registrate`, `unite`, `cerrá`, `volvé`, `hacé`, `mirá`, `vení`, `comé`, `escribí`, `tocá`, `pegá`, `llená`, `instalá`, `dale`, `contame`, `decime`, `escribime`, `compartilo`, `aceptalo`, `acceptá`, `probá`, `elegís`, `ponés`, `tomás`, `mandás`, `quedás`, `estás` (cuando es voseo), `quedate`, `andá`.
+- **Imperativos en `tú`** (UI casual, chat con amigos, testers guide): `arma, registra, únete, cierra, vuelve, haz, ve, ven, come, escribe, toca, pega, llena, instala, comparte, acepta, prueba, elige, pon, toma, manda, queda, di, cuenta`.
+- **Imperativos en `usted`** (privacy, términos, manuales formales): `arme, regístrese, únase, cierre, vuelva, haga, vea, venga, escriba, toque, pegue, llene, instale, comparta, acepte, pruebe, elija, ponga, tome, mande`.
+- **Antes de enviar cualquier texto en español, parar y revisar mentalmente**: ¿hay alguna palabra de la lista prohibida? Si la hay, reescribir.
+- Identificadores técnicos quedan en su idioma original (no se traduce `commit`, `merge`, `healthz`, `bundleIdentifier`, etc.).
+- Detalle adicional y memoria persistente: ver [HOOKS.md](HOOKS.md) → "Regla de idioma" y [memory/feedback_no_voseo_strict.md](.).
+
 ---
 
 ## 4. Buenas prácticas (soft rules)
@@ -75,7 +84,7 @@ Ninguna tarea no trivial puede saltarse este ciclo:
 
 ## 5. Comunicación con el usuario
 
-- **Idioma:** todo texto que generes — respuestas de chat, documentos, páginas web, copy de la app, mensajes de commit, comentarios de UI — debe estar en **español dialecto colombiano neutro**. Detalles y excepciones (identificadores técnicos, voseo prohibido, tratamiento usted/tú) en [HOOKS.md](HOOKS.md) → sección "Regla de idioma".
+- **Idioma:** ver §3 → "Idioma (regla dura)". Resumen: español colombiano neutro, sin voseo, en todo output.
 - **Tono:** evitar tecnicismos innecesarios. Si hay que usar un término técnico, explicarlo en una línea la primera vez.
 - **Longitud:** respuestas **cortas y concisas**. Ir al grano. Sin preámbulos largos ni relleno.
 - **Pedir decisiones al usuario:** cuando se necesite una respuesta del usuario para tomar una decisión (elegir entre opciones, confirmar enfoque, resolver ambigüedad), **usar siempre la herramienta `AskUserQuestion`** en vez de listar opciones en texto plano. Excepción única: confirmaciones triviales de una sola línea (ej. "¿Procedo?") inmediatamente después de un plan que el usuario ya leyó.

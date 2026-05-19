@@ -93,15 +93,41 @@ esac
 
 ---
 
-## Regla de idioma (aplica a todo output generado)
+## Regla de idioma (REGLA DURA — sin excepciones)
 
-**Todo texto que Claude genere — respuestas de chat, documentos, páginas web, comentarios de UI, mensajes de commit, copy de la app — debe estar escrito en español con dialecto colombiano neutro.**
+**Todo texto que Claude genere — respuestas de chat, documentos, páginas web, comentarios de UI, mensajes de commit, copy de la app, descripciones de Test Information, etc. — debe estar escrito en español con dialecto colombiano neutro. Sin voseo. Sin excepciones.**
 
-- Forma preferida en docs formales (privacy, términos, manuales): tratamiento de **usted**.
-- Forma preferida en UI / chat con el usuario: **tú** o **usted** según el tono del producto (en Pulpo: **tú**).
-- **No usar voseo** (`tenés`, `podés`, `escribinos`, etc.) — eso es rioplatense, no colombiano neutro.
+David lo ha corregido dos veces (privacy policy + testers guide) — la regla no es opcional.
+
+### Voseo PROHIBIDO
+
+Lista no exhaustiva de formas argentinas/rioplatenses que **NUNCA** se deben usar:
+
+| Categoría | Prohibido (voseo) | Correcto en `tú` | Correcto en `usted` |
+|---|---|---|---|
+| Pres. ind. 2ª pers. | tenés, podés, sabés, querés, decís, vos, sos | tienes, puedes, sabes, quieres, dices, tú, eres | tiene, puede, sabe, quiere, dice, usted, es |
+| Imperativos | armá, registrate, unite, cerrá, volvé, hacé, mirá, vení, comé, escribí, tocá, pegá, llená, instalá | arma, regístrate, únete, cierra, vuelve, haz, mira, ven, come, escribe, toca, pega, llena, instala | arme, regístrese, únase, cierre, vuelva, haga, mire, venga, coma, escriba, toque, pegue, llene, instale |
+| Pronombres enclíticos | compartilo, aceptalo, contame, decime, escribime, mandalo | compártelo, acéptalo, cuéntame, dime, escríbeme, mándalo | compártalo, acéptelo, cuénteme, dígame, escríbame, mándelo |
+| Pres. ind. otros | elegís, ponés, tomás, mandás, quedás | eliges, pones, tomas, mandas, quedas | elige, pone, toma, manda, queda |
+| Otros marcadores | dale, che, boludo, pibe, mirá vos, sabelo | (sin equivalente — eliminar) | (sin equivalente — eliminar) |
+
+### Cómo elegir tú vs. usted
+
+- **`tú`**: UI casual, chat con amigos, testers guide, copy de la app, marketing en redes.
+- **`usted`**: documentos legales (privacy, términos), manuales técnicos formales, contactos con clientes corporativos.
+
+### Otras reglas
+
 - Documentos bilingües (ES + EN) son válidos cuando el público objetivo lo requiere (ej. privacy policy). La porción en español sigue las reglas anteriores; la porción en inglés se mantiene en su redacción original.
-- Excepción única: identificadores técnicos (nombres de variables, funciones, comandos, claves de configuración) se quedan en su idioma original — no se traduce `commit`, `merge`, `healthz`, etc.
+- Identificadores técnicos (variables, funciones, comandos, claves de config, nombres propios) se quedan en su idioma original — no se traduce `commit`, `merge`, `healthz`, `bundleIdentifier`, etc.
+
+### Checklist mental antes de mandar texto en español
+
+1. ¿Hay imperativos? Verificar que están en forma `tú` o `usted`, no en `vos`.
+2. ¿Hay verbos 2ª persona presente? Buscar las terminaciones sospechosas `-ás`, `-és`, `-ís` finales — son banderas rojas.
+3. ¿Hay enclíticos? Verificar que el acento cae donde debe (`compártelo`, no `compartilo`).
+4. ¿Aparece la palabra `vos` o `sos`? Reescribir.
+5. Cuando dudes, leer en voz alta con acento bogotano. Si suena raro, está mal.
 
 ---
 
