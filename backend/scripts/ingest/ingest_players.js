@@ -43,10 +43,17 @@ async function ingestPlayers() {
         const position = mapPosition(player.position);
 
         await query(
-          `INSERT INTO players (name, full_name, date_of_birth, nationality_id, current_club_id, position)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           ON CONFLICT DO NOTHING`,
+          `INSERT INTO players (football_data_id, name, full_name, date_of_birth, nationality_id, current_club_id, position)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           ON CONFLICT (football_data_id) DO UPDATE SET
+             name = EXCLUDED.name,
+             full_name = EXCLUDED.full_name,
+             date_of_birth = EXCLUDED.date_of_birth,
+             nationality_id = EXCLUDED.nationality_id,
+             current_club_id = EXCLUDED.current_club_id,
+             position = EXCLUDED.position`,
           [
+            player.id,
             player.name,
             player.name,
             player.dateOfBirth || null,
