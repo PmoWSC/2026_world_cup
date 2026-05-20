@@ -32,6 +32,10 @@ USING (
 ) dupes
 WHERE p.id = dupes.id AND dupes.rn > 1;
 
+-- Full unique index (no WHERE clause). Postgres treats NULLs as
+-- distinct by default, so rows that haven't been backfilled with
+-- football_data_id can coexist. The full-index form is required
+-- because ON CONFLICT (football_data_id) cannot target a partial
+-- unique index.
 CREATE UNIQUE INDEX IF NOT EXISTS idx_players_football_data_id_unique
-  ON players (football_data_id)
-  WHERE football_data_id IS NOT NULL;
+  ON players (football_data_id);
