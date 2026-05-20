@@ -16,7 +16,7 @@ const playerResolvers = {
       let paramIdx = 1;
 
       if (searchQuery) {
-        sql += ` AND (p.name ILIKE $${paramIdx} OR p.full_name ILIKE $${paramIdx})`;
+        sql += ` AND (immutable_unaccent(p.name) ILIKE immutable_unaccent($${paramIdx}) OR immutable_unaccent(p.full_name) ILIKE immutable_unaccent($${paramIdx}))`;
         params.push(`%${searchQuery}%`);
         paramIdx++;
       }
@@ -26,12 +26,12 @@ const playerResolvers = {
         paramIdx++;
       }
       if (club) {
-        sql += ` AND c.name ILIKE $${paramIdx}`;
+        sql += ` AND immutable_unaccent(c.name) ILIKE immutable_unaccent($${paramIdx})`;
         params.push(`%${club}%`);
         paramIdx++;
       }
       if (nationality) {
-        sql += ` AND (co.name ILIKE $${paramIdx} OR co.fifa_code ILIKE $${paramIdx})`;
+        sql += ` AND (immutable_unaccent(co.name) ILIKE immutable_unaccent($${paramIdx}) OR co.fifa_code ILIKE $${paramIdx})`;
         params.push(`%${nationality}%`);
         paramIdx++;
       }
@@ -51,7 +51,7 @@ const playerResolvers = {
         FROM players p
         LEFT JOIN clubs c ON c.id = p.current_club_id
         LEFT JOIN countries co ON co.id = p.nationality_id
-        WHERE (co.name ILIKE $1 OR co.fifa_code ILIKE $1)
+        WHERE (immutable_unaccent(co.name) ILIKE immutable_unaccent($1) OR co.fifa_code ILIKE $1)
       `;
       const params = [country];
 

@@ -71,15 +71,15 @@ async function predictMatch(homeTeam, awayTeam) {
 }
 
 async function resolveClubId(teamName) {
-  // Try exact match first, then fuzzy
+  // Try exact match first (accent-insensitive), then substring fuzzy.
   let result = await query(
-    "SELECT id FROM clubs WHERE name ILIKE $1 LIMIT 1",
+    "SELECT id FROM clubs WHERE immutable_unaccent(name) ILIKE immutable_unaccent($1) LIMIT 1",
     [teamName]
   );
 
   if (result.rows.length === 0) {
     result = await query(
-      "SELECT id FROM clubs WHERE name ILIKE $1 OR short_name ILIKE $1 LIMIT 1",
+      "SELECT id FROM clubs WHERE immutable_unaccent(name) ILIKE immutable_unaccent($1) OR immutable_unaccent(short_name) ILIKE immutable_unaccent($1) LIMIT 1",
       [`%${teamName}%`]
     );
   }

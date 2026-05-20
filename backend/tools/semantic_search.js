@@ -8,7 +8,7 @@ async function semantic_search({ query: searchQuery, limit = 5 }) {
      FROM players p
      LEFT JOIN clubs c ON c.id = p.current_club_id
      LEFT JOIN countries co ON co.id = p.nationality_id
-     WHERE p.name ILIKE $1 OR c.name ILIKE $1 OR co.name ILIKE $1
+     WHERE immutable_unaccent(p.name) ILIKE immutable_unaccent($1) OR immutable_unaccent(c.name) ILIKE immutable_unaccent($1) OR immutable_unaccent(co.name) ILIKE immutable_unaccent($1)
      ORDER BY p.market_value_eur DESC NULLS LAST
      LIMIT $2`,
     [`%${searchQuery}%`, limit]

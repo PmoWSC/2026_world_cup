@@ -20,7 +20,7 @@ async function get_fixtures({ competition, team, status, date_from, date_to, lim
     idx++;
   }
   if (team) {
-    sql += ` AND (ht.name ILIKE $${idx} OR at2.name ILIKE $${idx})`;
+    sql += ` AND (immutable_unaccent(ht.name) ILIKE immutable_unaccent($${idx}) OR immutable_unaccent(at2.name) ILIKE immutable_unaccent($${idx}))`;
     params.push(`%${team}%`);
     idx++;
   }

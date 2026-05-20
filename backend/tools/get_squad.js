@@ -7,7 +7,7 @@ async function get_squad({ country, competition }) {
     FROM players p
     LEFT JOIN clubs c ON c.id = p.current_club_id
     JOIN countries co ON co.id = p.nationality_id
-    WHERE co.name ILIKE $1 OR co.fifa_code ILIKE $1
+    WHERE immutable_unaccent(co.name) ILIKE immutable_unaccent($1) OR co.fifa_code ILIKE $1
   `;
   const params = [country];
 

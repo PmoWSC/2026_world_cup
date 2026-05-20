@@ -26,7 +26,7 @@ const fixtureResolvers = {
         paramIdx++;
       }
       if (team) {
-        sql += ` AND (ht.name ILIKE $${paramIdx} OR at2.name ILIKE $${paramIdx})`;
+        sql += ` AND (immutable_unaccent(ht.name) ILIKE immutable_unaccent($${paramIdx}) OR immutable_unaccent(at2.name) ILIKE immutable_unaccent($${paramIdx}))`;
         params.push(`%${team}%`);
         paramIdx++;
       }
