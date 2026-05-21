@@ -10,7 +10,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "http://localhost:4000/graphql",
         "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
-        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "en"
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
       }
     },
     "preview": {
@@ -22,7 +22,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://pulpo.white-systems.com/graphql",
         "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
-        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "en"
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
       }
     },
     "production": {
@@ -30,7 +30,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://pulpo.white-systems.com/graphql",
         "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
-        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "en"
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
       }
     }
   },
