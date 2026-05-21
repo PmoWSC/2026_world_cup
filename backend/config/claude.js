@@ -16,7 +16,7 @@ const TOOL_DEFINITIONS = [
           type: "string",
           description: "Filter by position (e.g. Forward, Midfielder, Defender, Goalkeeper)",
         },
-        club: { type: "string", description: "Substring of club name. Match is accent-insensitive and case-insensitive." },
+        club: { type: "string", description: "Substring of the club name. ALWAYS pass the SHORT/common name only (e.g. 'Junior', 'Tolima', 'Boca', 'Real Madrid'), NEVER the full descriptive name (e.g. 'Junior de Barranquilla' or 'Boca Juniors of Argentina'). Match is accent-insensitive and case-insensitive against both full and short names." },
         nationality: { type: "string", description: "Filter by nationality" },
         limit: { type: "integer", description: "Max results (default 10)", default: 10 },
       },

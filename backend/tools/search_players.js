@@ -23,7 +23,7 @@ async function search_players({ query: searchQuery, position, club, nationality,
     idx++;
   }
   if (club) {
-    sql += ` AND immutable_unaccent(c.name) ILIKE immutable_unaccent($${idx})`;
+    sql += ` AND (immutable_unaccent(c.name) ILIKE immutable_unaccent($${idx}) OR immutable_unaccent(c.short_name) ILIKE immutable_unaccent($${idx}))`;
     params.push(`%${club}%`);
     idx++;
   }
