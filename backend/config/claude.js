@@ -7,20 +7,19 @@ const TOOL_DEFINITIONS = [
   {
     name: "search_players",
     description:
-      "Search for football players by name, position, club, or nationality. Returns player profiles with stats and market values.",
+      "Search for football players. Provide at least one of: query (player name fragment), club (substring of club name, e.g. 'Junior', 'Tolima', 'Real Madrid'), or nationality. To list a club's roster pass only club. Returns player profiles with stats and market values.",
     input_schema: {
       type: "object",
       properties: {
-        query: { type: "string", description: "Player name or search term" },
+        query: { type: "string", description: "Optional. Player name fragment (e.g. 'Nunez', 'Vinicius'). Leave empty to list everyone matching the other filters." },
         position: {
           type: "string",
           description: "Filter by position (e.g. Forward, Midfielder, Defender, Goalkeeper)",
         },
-        club: { type: "string", description: "Filter by club name" },
+        club: { type: "string", description: "Substring of club name. Match is accent-insensitive and case-insensitive." },
         nationality: { type: "string", description: "Filter by nationality" },
         limit: { type: "integer", description: "Max results (default 10)", default: 10 },
       },
-      required: ["query"],
     },
   },
   {

@@ -7,11 +7,16 @@ async function search_players({ query: searchQuery, position, club, nationality,
     FROM players p
     LEFT JOIN clubs c ON c.id = p.current_club_id
     LEFT JOIN countries co ON co.id = p.nationality_id
-    WHERE immutable_unaccent(p.name) ILIKE immutable_unaccent($1)
+    WHERE 1=1
   `;
-  const params = [`%${searchQuery}%`];
-  let idx = 2;
+  const params = [];
+  let idx = 1;
 
+  if (searchQuery) {
+    sql += ` AND immutable_unaccent(p.name) ILIKE immutable_unaccent($${idx})`;
+    params.push(`%${searchQuery}%`);
+    idx++;
+  }
   if (position) {
     sql += ` AND p.position ILIKE $${idx}`;
     params.push(`%${position}%`);
