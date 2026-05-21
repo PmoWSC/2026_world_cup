@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 import { useChatStore } from '../store/chatStore';
 import { useAuthStore } from '../store/authStore';
 import { CHAT_MUTATION } from '../apollo/mutations';
@@ -20,6 +21,7 @@ export function useChat() {
   } = useChatStore();
 
   const { isAuthenticated } = useAuthStore();
+  const { i18n } = useTranslation();
   const [chatMutate] = useMutation(CHAT_MUTATION);
 
   const sendMessage = useCallback(
@@ -29,7 +31,7 @@ export function useChat() {
 
       try {
         const { data } = await chatMutate({
-          variables: { message: text, sessionId },
+          variables: { message: text, language: i18n.language, sessionId },
         });
 
         const reply = data?.chat;
@@ -65,7 +67,7 @@ export function useChat() {
         setLoading(false);
       }
     },
-    [chatMutate, sessionId, isAuthenticated, addMessage, setLoading, setRemainingMessages, setResetAt, setShowRegistrationPrompt],
+    [chatMutate, sessionId, i18n.language, isAuthenticated, addMessage, setLoading, setRemainingMessages, setResetAt, setShowRegistrationPrompt],
   );
 
   const dismissRegistrationPrompt = useCallback(() => {

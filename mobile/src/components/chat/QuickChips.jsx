@@ -1,35 +1,40 @@
 import React from 'react';
 import { ScrollView, Pressable, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../styles/colors';
 import { typography } from '../../styles/typography';
 
-const CHIPS = [
-  'Live Simulations',
-  'Historical Bias',
-  'Player Stats',
-  'Upcoming Matches',
-  'League Standings',
+const CHIP_KEYS = [
+  'live_simulations',
+  'historical_bias',
+  'player_stats',
+  'upcoming_matches',
+  'league_standings',
 ];
 
 export default function QuickChips({ onChipPress }) {
+  const { t } = useTranslation();
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {CHIPS.map((label) => (
-        <Pressable
-          key={label}
-          onPress={() => onChipPress?.(label)}
-          style={({ pressed }) => [
-            styles.chip,
-            pressed && styles.chipPressed,
-          ]}
-        >
-          <Text style={styles.chipText}>{label}</Text>
-        </Pressable>
-      ))}
+      {CHIP_KEYS.map((key) => {
+        const label = t(`quick_chips.${key}`);
+        return (
+          <Pressable
+            key={key}
+            onPress={() => onChipPress?.(label)}
+            style={({ pressed }) => [
+              styles.chip,
+              pressed && styles.chipPressed,
+            ]}
+          >
+            <Text style={styles.chipText}>{label}</Text>
+          </Pressable>
+        );
+      })}
     </ScrollView>
   );
 }
