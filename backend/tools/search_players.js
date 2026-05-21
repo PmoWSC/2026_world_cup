@@ -23,9 +23,19 @@ async function search_players({ query: searchQuery, position, club, nationality,
     idx++;
   }
   if (club) {
-    sql += ` AND (immutable_unaccent(c.name) ILIKE immutable_unaccent($${idx}) OR immutable_unaccent(c.short_name) ILIKE immutable_unaccent($${idx}))`;
+    // Bidirectional match: either the DB name/short_name contains the
+    // user query, or the user query contains the DB name/short_name.
+    // Lets "Junior de Barranquilla" match "CDP Junior FC" via the
+    // short_name "Junior" being a substring of the query.
+    sql += ` AND (
+      immutable_unaccent(c.name) ILIKE immutable_unaccent($${idx})
+      OR immutable_unaccent(c.short_name) ILIKE immutable_unaccent($${idx})
+      OR immutable_unaccent($${idx + 1}) ILIKE '%' || immutable_unaccent(c.name) || '%'
+      OR immutable_unaccent($${idx + 1}) ILIKE '%' || immutable_unaccent(c.short_name) || '%'
+    )`;
     params.push(`%${club}%`);
-    idx++;
+    params.push(club);
+    idx += 2;
   }
   if (nationality) {
     sql += ` AND (immutable_unaccent(co.name) ILIKE immutable_unaccent($${idx}) OR co.fifa_code ILIKE $${idx})`;
