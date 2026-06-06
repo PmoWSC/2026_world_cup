@@ -4,7 +4,11 @@ const { query } = require("../config/db");
 const DEFAULT_HOME_WIN = 0.42;
 const DEFAULT_DRAW = 0.26;
 const DEFAULT_AWAY_WIN = 0.32;
-const MIN_MATCHES = 3;
+// Con solo una temporada cargada en `fixtures`, pedir 3 H2H es demasiado
+// y casi todos los pares caen al default (0.42/0.26/0.32). Con 1 ya se
+// mueve el numero y el blend con `sampleWeight = total/10` mantiene la
+// estabilidad ante pocas muestras (el peso del primer H2H es ~10%).
+const MIN_MATCHES = 1;
 
 async function predict(homeClubId, awayClubId) {
   const result = await query(
