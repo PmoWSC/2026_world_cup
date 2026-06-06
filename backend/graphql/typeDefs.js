@@ -4,6 +4,7 @@ const typeDefs = gql`
   type Query {
     # Predictions
     predictMatch(homeTeam: String!, awayTeam: String!, competition: String): Prediction
+    predictionStats: PredictionStats!
 
     # Fixtures
     fixtures(
@@ -203,6 +204,7 @@ const typeDefs = gql`
     homeWin: Float!
     draw: Float!
     awayWin: Float!
+    cached: Boolean!
     models: [ModelBreakdown!]!
   }
 
@@ -211,6 +213,17 @@ const typeDefs = gql`
     homeWin: Float!
     draw: Float!
     awayWin: Float!
+  }
+
+  type PredictionStats {
+    uniquePredictionsCalculated: Int!
+    totalHitsServed: Int!
+    cacheHitRatePct: Float!
+    apiCallsSaved: Int!
+    mostPredictedHomeTeam: String
+    mostPredictedAwayTeam: String
+    mostPredictedHitCount: Int
+    oldestCacheEntryAt: String
   }
 
   # ============================================================
