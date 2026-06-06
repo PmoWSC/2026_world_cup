@@ -1,6 +1,11 @@
-const { chat: claudeChat, TOOL_DEFINITIONS } = require("../../config/claude");
+const { chat: claudeChat } = require("../../config/claude");
 const { checkRateLimit } = require("../../utils/rate_limiter");
+const { query } = require("../../config/db");
 const toolHandlers = require("../../tools");
+
+// How many previous turns (user + assistant pairs) to load as context.
+// 5 pairs = up to 10 rows from chat_messages.
+const HISTORY_PAIRS = 5;
 
 const LANGUAGE_NAMES = {
   en: "English",
@@ -10,6 +15,42 @@ const LANGUAGE_NAMES = {
   de: "German",
   it: "Italian",
 };
+
+// Load the last HISTORY_PAIRS turns for a session from chat_messages,
+// ordered oldest-first so they form a valid alternating messages array.
+// Returns [] gracefully if the table does not yet exist (pre-migration).
+async function loadHistory(sessionId) {
+  try {
+    const r = await query(
+      `SELECT role, content FROM (
+         SELECT role, content, created_at
+         FROM chat_messages
+         WHERE session_id = $1
+         ORDER BY created_at DESC
+         LIMIT $2
+       ) recent
+       ORDER BY created_at ASC`,
+      [sessionId, HISTORY_PAIRS * 2]
+    );
+    return r.rows.map((row) => ({ role: row.role, content: row.content }));
+  } catch {
+    // chat_messages table not yet created — run the migration.
+    return [];
+  }
+}
+
+// Persist a single user or assistant turn. Fire-and-forget (errors
+// are logged but do not break the response flow).
+async function saveMessage(sessionId, role, content) {
+  try {
+    await query(
+      "INSERT INTO chat_messages (session_id, role, content) VALUES ($1, $2, $3)",
+      [sessionId, role, content]
+    );
+  } catch (err) {
+    console.warn("[CHAT HISTORY] save failed:", err.message);
+  }
+}
 
 const chatResolvers = {
   Mutation: {
@@ -33,7 +74,9 @@ const chatResolvers = {
       const languageName = LANGUAGE_NAMES[language] || "English";
 
       try {
-        const messages = [{ role: "user", content: message }];
+        // Load conversation history, then append the new user message.
+        const history = await loadHistory(identifier);
+        const messages = [...history, { role: "user", content: message }];
 
         let response = await claudeChat(messages, language, languageName);
         let assistantContent = response.content;
@@ -72,7 +115,7 @@ const chatResolvers = {
           assistantContent = response.content;
         }
 
-        // Extract text and visualization from response
+        // Extract text and visualization from final response.
         let textMessage = "";
         let visualization = null;
 
@@ -82,7 +125,6 @@ const chatResolvers = {
           }
         }
 
-        // Check if any tool results contained prediction data
         for (const msg of messages) {
           if (msg.role === "user" && Array.isArray(msg.content)) {
             for (const item of msg.content) {
@@ -90,18 +132,20 @@ const chatResolvers = {
                 try {
                   const data = JSON.parse(item.content);
                   if (data.homeWin !== undefined && data.draw !== undefined) {
-                    visualization = {
-                      type: "PROBABILITY_BARS",
-                      data,
-                    };
+                    visualization = { type: "PROBABILITY_BARS", data };
                   }
                 } catch {
-                  // Not JSON or no prediction data
+                  // Not JSON or no prediction data.
                 }
               }
             }
           }
         }
+
+        // Persist this turn so the next message can load it as context.
+        // Only the plain-text content is stored (no tool-use blocks).
+        await saveMessage(identifier, "user", message);
+        if (textMessage) await saveMessage(identifier, "assistant", textMessage);
 
         return {
           message: textMessage,

@@ -167,6 +167,7 @@ const COMPETITION_LABELS = {
   premier_league_2025: "Premier League 2025-2026 (England)",
   libertadores_2026: "Copa Libertadores 2026 (CONMEBOL, includes Colombian clubs)",
   world_cup_2026: "2026 FIFA World Cup",
+  internationals_2026: "2026 national-team friendlies (warm-up matches before the World Cup)",
 };
 
 function buildSystemPrompt(language, languageName) {
@@ -177,11 +178,22 @@ function buildSystemPrompt(language, languageName) {
 
   const modeInstructions =
     ACTIVE_MODE === "world_cup"
-      ? `You cover the 2026 FIFA World Cup. Reference all WC data + tentacle factors.`
+      ? `You cover the 2026 FIFA World Cup and national-team friendlies. Reference all WC data + tentacle factors. Use these competition slugs when calling tools (exact, in backticks): ${competitionsLabel}. Use \`world_cup_2026\` for tournament matches and \`internationals_2026\` for warm-up friendlies. Never invent or guess slug variants.`
       : `You cover the following competitions (use the exact slug shown in backticks when calling tools): ${competitionsLabel}. Reference current season data. When asked about upcoming matches, call the get_fixtures tool with one of these slugs ONLY: ${validSlugs}. Never invent or guess slug variants.`;
+
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  const weekday = now.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
+  const time = now.toISOString().slice(11, 16);
 
   return `You are Pulpo, the Football Oracle.
 Respond in ${languageName} (code: ${language}).
+
+TODAY IS ${today} (${weekday}), current time ${time} UTC. Treat this as the present moment.
+When the user asks about the "next", "upcoming", or "próximo" match, call get_fixtures
+with date_from = ${today} and status "scheduled", then pick the soonest one. Do not call a
+match "next" or "upcoming" without checking its date against today. A match whose date is
+before today has already been played — use its result, do not predict it.
 
 PERSONALITY: Confident, fun, slightly cheeky — like a witty sports commentator who happens to be an octopus.
 You have opinions. Use octopus metaphors naturally. Keep responses concise and data-driven.
