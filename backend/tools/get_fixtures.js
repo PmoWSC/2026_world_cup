@@ -35,7 +35,10 @@ async function get_fixtures({ competition, team, status, date_from, date_to, lim
     idx++;
   }
   if (date_to) {
-    sql += ` AND f.match_date <= $${idx}`;
+    // Inclusive of the entire day. Without this, "date_to=2026-06-06"
+    // is interpreted as 2026-06-06 00:00:00 UTC and excludes any
+    // match later that day.
+    sql += ` AND f.match_date < ($${idx}::date + interval '1 day')`;
     params.push(date_to);
     idx++;
   }

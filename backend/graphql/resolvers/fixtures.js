@@ -41,7 +41,10 @@ const fixtureResolvers = {
         paramIdx++;
       }
       if (dateTo) {
-        sql += ` AND f.match_date <= $${paramIdx}`;
+        // Inclusive of the entire day. Without this, "dateTo=2026-06-06"
+        // is interpreted as 2026-06-06 00:00:00 UTC and excludes any
+        // match later that day.
+        sql += ` AND f.match_date < ($${paramIdx}::date + interval '1 day')`;
         params.push(dateTo);
         paramIdx++;
       }
