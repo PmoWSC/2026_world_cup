@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../src/apollo/client";
 import { useDisclaimer } from "../src/hooks/useDisclaimer";
+import { useAuthStore } from "../src/store/authStore";
 import DisclaimerModal from "../src/components/DisclaimerModal";
 import "../src/i18n/i18n";
 
@@ -12,11 +14,20 @@ import "../src/i18n/i18n";
 
 export default function RootLayout() {
   const { loading: disclaimerLoading, accepted, accept } = useDisclaimer();
+  const authHydrated = useAuthStore((s) => s.hydrated);
+  const hydrateAuth = useAuthStore((s) => s.hydrate);
 
-  // While reading SecureStore: the native splash stays up. Returning null
-  // is fast (<10ms typically) and prevents a Stack mount that would have
-  // to be unmounted right after if the user has not accepted yet.
-  if (disclaimerLoading) {
+  // Restore auth (token + refreshToken + user) from SecureStore on cold
+  // start. Without this, every app launch sent the user back to Login even
+  // if they had registered minutes before.
+  useEffect(() => {
+    hydrateAuth();
+  }, [hydrateAuth]);
+
+  // While reading SecureStore (disclaimer or auth): the native splash stays
+  // up. Returning null is fast (<10ms typically) and prevents a Stack mount
+  // that would have to be unmounted right after.
+  if (disclaimerLoading || !authHydrated) {
     return null;
   }
 
