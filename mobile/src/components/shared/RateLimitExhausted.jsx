@@ -26,7 +26,7 @@ function formatResetDate(isoString) {
   }
 }
 
-// Shown to authenticated users who exhausted their 30 weekly questions
+// Shown to authenticated users who exhausted their 20 daily questions
 function AuthExhausted({ onGoPolla, resetAt }) {
   const resetLabel = formatResetDate(resetAt);
 
@@ -35,7 +35,7 @@ function AuthExhausted({ onGoPolla, resetAt }) {
       <Text style={styles.title}>Tentacles need recharging! 🔋</Text>
 
       <Text style={styles.message}>
-        You've used all 30 weekly questions.
+        You've used all 20 daily questions.
         {resetLabel ? `\nYour questions reset on ${resetLabel}.` : ''}
       </Text>
 
@@ -72,7 +72,7 @@ function AnonExhausted({ onRegister }) {
       <Text style={styles.title}>You've used your 5 free questions!</Text>
 
       <Text style={styles.message}>
-        Register free and get 30 weekly questions, plus full access to Polla.
+        Register free and get 20 daily questions, plus full access to Polla.
       </Text>
 
       <Pressable onPress={onRegister} style={styles.registerWrapper}>

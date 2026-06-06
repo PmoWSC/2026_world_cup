@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useAuthStore } from '../store/authStore';
+import { useChatStore } from '../store/chatStore';
 import { LOGIN, REGISTER, REFRESH_TOKEN } from '../apollo/mutations';
 
 export function useAuth() {
@@ -10,6 +11,18 @@ export function useAuth() {
   const [loginMutate] = useMutation(LOGIN);
   const [registerMutate] = useMutation(REGISTER);
   const [refreshMutate] = useMutation(REFRESH_TOKEN);
+
+  // Reset chat counter when transitioning between anonymous and authenticated.
+  // The counters live in different identifiers on the backend (sessionId vs
+  // user.id), so the value the UI is showing — pulled from the last chat
+  // response while still anonymous — is stale immediately after login. We
+  // null it out so the label hides until the next chat response populates
+  // the real number for the new identifier.
+  function resetChatCounter() {
+    const store = useChatStore.getState();
+    store.setRemainingMessages(null);
+    store.setResetAt(null);
+  }
 
   const login = useCallback(
     async (email, password) => {
@@ -21,6 +34,7 @@ export function useAuth() {
         const result = data?.login;
         if (result) {
           setAuth(result.token, result.refreshToken, result.user);
+          resetChatCounter();
         }
         return result;
       } catch (error) {
@@ -43,6 +57,7 @@ export function useAuth() {
         const result = data?.register;
         if (result) {
           setAuth(result.token, result.refreshToken, result.user);
+          resetChatCounter();
         }
         return result;
       } catch (error) {

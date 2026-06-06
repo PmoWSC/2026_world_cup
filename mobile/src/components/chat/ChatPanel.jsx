@@ -75,7 +75,7 @@ export default function ChatPanel() {
   const counterLabel = (() => {
     if (remainingMessages == null) return null;
     if (isAuthenticated) {
-      return `🐙 ${remainingMessages} of 30 weekly questions left`;
+      return `🐙 ${remainingMessages} of 20 daily questions left`;
     }
     return `🐙 ${remainingMessages}/5 free questions left`;
   })();

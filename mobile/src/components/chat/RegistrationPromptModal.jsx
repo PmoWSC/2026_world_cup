@@ -21,7 +21,7 @@ import { colors, gradients } from '../../styles/colors';
 import { fonts } from '../../styles/typography';
 
 const BENEFITS = [
-  { icon: '💬', text: '30 weekly questions — every week, automatically' },
+  { icon: '💬', text: '20 daily questions — every day, automatically' },
   { icon: '🏆', text: 'Create Pollas and challenge your friends' },
   { icon: '📊', text: 'Full match predictions & model breakdowns' },
   { icon: '🔓', text: '100% free — no credit card needed' },
