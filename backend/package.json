@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "ingest": "node scripts/ingest/run_all.js"
+    "ingest": "node scripts/ingest/run_all.js",
+    "ingest:wc": "node scripts/ingest/wc/run_all_wc.js",
+    "verify:wc": "node scripts/ingest/wc/verify_wc_phase1.js",
+    "check:apifootball": "node scripts/ingest/wc/check_api_football.js",
+    "ingest:friendlies": "node scripts/ingest/wc/ingest_friendlies.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.39.0",

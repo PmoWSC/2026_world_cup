@@ -6,7 +6,7 @@ const COMPETITION_MODES = {
     data_sources: ["football-data.org", "transfermarkt-datasets"],
   },
   world_cup: {
-    competitions: ["world_cup_2026"],
+    competitions: ["world_cup_2026", "internationals_2026"],
     features: [
       "chat",
       "predictions",
