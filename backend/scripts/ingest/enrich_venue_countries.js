@@ -28,9 +28,12 @@ async function geocodeCountry(name, city) {
     format: "json",
     addressdetails: "1",
     limit: "1",
+    "accept-language": "en", // forzar nombre del pais en ingles
   });
   const url = `${NOMINATIM_URL}?${params.toString()}`;
-  const resp = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+  const resp = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT, "Accept-Language": "en" },
+  });
   if (!resp.ok) {
     throw new Error(`Nominatim ${resp.status} for "${name}, ${city || ""}"`);
   }
