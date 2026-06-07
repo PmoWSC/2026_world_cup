@@ -39,6 +39,33 @@ function mapStatus(short) {
   return "scheduled"; // NS, TBD
 }
 
+// Upsert a venue row keyed by (name, city). Country is left NULL: the
+// enrich_venue_countries.js script fills it in a second pass using
+// Nominatim. Returns the venue UUID or null when the API did not give
+// us venue info.
+async function upsertVenue(apiVenue, cache) {
+  if (!apiVenue || !apiVenue.name) return null;
+  const key = `${apiVenue.name}|${apiVenue.city || ""}`;
+  if (cache.has(key)) return cache.get(key);
+
+  const existing = await query(
+    `SELECT id FROM venues
+     WHERE name = $1 AND COALESCE(city, '') = COALESCE($2, '')
+     LIMIT 1`,
+    [apiVenue.name, apiVenue.city || null]
+  );
+  if (existing.rows.length > 0) {
+    cache.set(key, existing.rows[0].id);
+    return existing.rows[0].id;
+  }
+  const inserted = await query(
+    `INSERT INTO venues (name, city) VALUES ($1, $2) RETURNING id`,
+    [apiVenue.name, apiVenue.city || null]
+  );
+  cache.set(key, inserted.rows[0].id);
+  return inserted.rows[0].id;
+}
+
 // Resolve a national team to a club row under internationals_2026, sharing
 // the country with the World Cup squad when it is one of the 48.
 async function resolveTeamClub(apiName, competitionId, cache) {
@@ -127,11 +154,18 @@ async function ingestFriendlies() {
   let inserted = 0;
   let updated = 0;
 
+  const venueCache = new Map(); // key: name|city -> venue_id
+
   for (const m of relevant) {
     const homeId = await resolveTeamClub(m.teams.home.name, competitionId, clubCache);
     const awayId = await resolveTeamClub(m.teams.away.name, competitionId, clubCache);
     const status = mapStatus(m.fixture.status?.short);
     const apiId = m.fixture.id;
+
+    // Captura del venue. API-Football devuelve name + city sin country;
+    // el country lo enriquecemos despues con scripts/enrich/venue_countries.js
+    // (Nominatim geocoder), o queda NULL y el modelo asume partido neutral.
+    const venueId = await upsertVenue(m.fixture.venue, venueCache);
 
     // Idempotent upsert keyed by provider id (no schema change needed).
     const existing = await query(
@@ -143,7 +177,7 @@ async function ingestFriendlies() {
       competitionId, "Friendly", m.fixture.date, homeId, awayId,
       m.goals.home, m.goals.away,
       m.score?.halftime?.home ?? null, m.score?.halftime?.away ?? null,
-      status, apiId,
+      status, apiId, venueId,
     ];
 
     if (existing.rows.length) {
@@ -152,7 +186,7 @@ async function ingestFriendlies() {
            stage = $2, match_date = $3, home_team_id = $4, away_team_id = $5,
            home_score = $6, away_score = $7,
            halftime_home_score = $8, halftime_away_score = $9,
-           status = $10, updated_at = NOW()
+           status = $10, venue_id = $12, updated_at = NOW()
          WHERE competition_id = $1 AND football_data_id = $11`,
         params
       );
@@ -162,8 +196,8 @@ async function ingestFriendlies() {
         `INSERT INTO fixtures
            (competition_id, stage, match_date, home_team_id, away_team_id,
             home_score, away_score, halftime_home_score, halftime_away_score,
-            status, football_data_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+            status, football_data_id, venue_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
         params
       );
       inserted++;

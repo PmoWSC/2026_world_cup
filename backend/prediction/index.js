@@ -3,6 +3,14 @@ const historicalModel = require("./historical_model");
 const marketValueModel = require("./market_value_model");
 const formModel = require("./form_model");
 const cohesionModel = require("./cohesion_model");
+const { homeAdvantageFactor } = require("./home_advantage");
+
+// How much weight to give to "being at home" in a national-team match.
+// The 3 numeric models already build in a default ~7.5% home bias (the
+// +0.05 in market_value, +0.10 in form, plus the defaults in historical).
+// For club matches that assumption is correct. For national-team matches
+// we replace it with a venue-based correction in [-ASSUMED, +ASSUMED].
+const ASSUMED_HOME_BIAS = 0.075;
 
 // Two sets of weights depending on whether the match is between national
 // teams (World Cup, internationals) or club teams (La Liga, Premier,
@@ -74,10 +82,33 @@ async function predictMatch(homeTeam, awayTeam) {
   }
 
   const sum = compositeHome + compositeDraw + compositeAway;
+  let homeProb = compositeHome / sum;
+  let drawProb = compositeDraw / sum;
+  let awayProb = compositeAway / sum;
+
+  // Venue-based home advantage correction for national-team matches.
+  // The models assume the team in `home_team_id` plays at home — true
+  // for club matches, often false for friendlies / World Cup. We compute
+  // the real advantage from the venue and replace the assumed bias.
+  if (isNationalMatch) {
+    const [homeF, awayF] = await Promise.all([
+      homeAdvantageFactor(homeClubId),
+      homeAdvantageFactor(awayClubId),
+    ]);
+    if (homeF !== null && awayF !== null) {
+      const realBias = (homeF - awayF) * ASSUMED_HOME_BIAS;
+      const correction = realBias - ASSUMED_HOME_BIAS;
+      homeProb = clamp01(homeProb + correction);
+      awayProb = clamp01(awayProb - correction);
+      const s = homeProb + drawProb + awayProb;
+      homeProb /= s; drawProb /= s; awayProb /= s;
+    }
+  }
+
   const computed = {
-    homeWin: compositeHome / sum,
-    draw: compositeDraw / sum,
-    awayWin: compositeAway / sum,
+    homeWin: homeProb,
+    draw: drawProb,
+    awayWin: awayProb,
     models: modelResults.map((r) => ({
       name: r.name,
       homeWin: parseFloat(r.homeWin.toFixed(4)),
@@ -107,6 +138,12 @@ async function isNationalTeamMatch(homeClubId, awayClubId) {
     [homeClubId, awayClubId]
   );
   return r.rows[0].count === 2;
+}
+
+function clamp01(x) {
+  if (x < 0.01) return 0.01;
+  if (x > 0.99) return 0.99;
+  return x;
 }
 
 function formatPrediction(homeTeam, awayTeam, raw, cached) {
