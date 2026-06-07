@@ -98,7 +98,7 @@ const TOOL_DEFINITIONS = [
   {
     name: "get_tentacle_factors",
     description:
-      "Get hidden match factors: altitude, climate, recovery days, travel distance, and referee tendencies. Only available in World Cup mode.",
+      "Get hidden match context for national-team matches (World Cup, friendlies): altitude of the venue, climate, days of rest of each team since their last match. Use this AFTER predict_match for friendlies and World Cup fixtures to enrich the analysis with non-numeric factors. Returns {applies:false} for club matches (La Liga, Premier, Libertadores) — in that case skip it.",
     input_schema: {
       type: "object",
       properties: {

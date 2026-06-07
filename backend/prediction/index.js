@@ -2,25 +2,30 @@ const { query } = require("../config/db");
 const historicalModel = require("./historical_model");
 const marketValueModel = require("./market_value_model");
 const formModel = require("./form_model");
-const { ACTIVE_MODE } = require("../config/competition");
+const cohesionModel = require("./cohesion_model");
 
-const WEIGHTS = {
-  league_demo: {
-    historical: 0.20,
-    market_value: 0.35,
-    form: 0.45,
-  },
-  world_cup: {
-    historical: 0.15,
-    market_value: 0.25,
-    form: 0.25,
-    cohesion: 0.15,
-    pedigree: 0.10,
-    tentacles: 0.10,
-  },
+// Two sets of weights depending on whether the match is between national
+// teams (World Cup, internationals) or club teams (La Liga, Premier,
+// Libertadores). The user explicitly does NOT want club matches to be
+// influenced by the national-team-specific cohesion model.
+//
+// For club matches we keep the classic 3-model composite.
+// For national-team matches we drop a bit of market_value and form
+// weight to make room for cohesion (squad chemistry from shared clubs).
+const CLUB_WEIGHTS = {
+  historical: 0.20,
+  market_value: 0.35,
+  form: 0.45,
+};
+const NATIONAL_WEIGHTS = {
+  historical: 0.20,
+  market_value: 0.20,
+  form: 0.40,
+  cohesion: 0.20,
 };
 
-const MODELS = [historicalModel, marketValueModel, formModel];
+const CLUB_MODELS = [historicalModel, marketValueModel, formModel];
+const NATIONAL_MODELS = [historicalModel, marketValueModel, formModel, cohesionModel];
 
 // TTL del cache. 24h es buen balance: el cron de amistosos refresca
 // marcadores cada 2h, y los partidos del Mundial cambian con baja
@@ -43,15 +48,21 @@ async function predictMatch(homeTeam, awayTeam) {
     return formatPrediction(homeTeam, awayTeam, cached, true);
   }
 
+  // Pick the right model set: cohesion (squad chemistry) only applies
+  // when BOTH teams are national teams (rows in clubs whose competition
+  // is world_cup_2026). For club matches we stay with the classic
+  // 3-model composite so League / Libertadores predictions are unchanged.
+  const isNationalMatch = await isNationalTeamMatch(homeClubId, awayClubId);
+  const models = isNationalMatch ? NATIONAL_MODELS : CLUB_MODELS;
+  const weights = isNationalMatch ? NATIONAL_WEIGHTS : CLUB_WEIGHTS;
+
   // 2. Cache miss o expirado -> calcular
   const modelResults = await Promise.all(
-    MODELS.map(async (model) => {
+    models.map(async (model) => {
       const result = await model.predict(homeClubId, awayClubId);
       return { name: model.name, ...result };
     })
   );
-
-  const weights = WEIGHTS[ACTIVE_MODE] || WEIGHTS.league_demo;
   let compositeHome = 0;
   let compositeDraw = 0;
   let compositeAway = 0;
@@ -79,6 +90,21 @@ async function predictMatch(homeTeam, awayTeam) {
   writeCache(homeClubId, awayClubId, computed);
 
   return formatPrediction(homeTeam, awayTeam, computed, false);
+}
+
+// Both teams have to live in the world_cup_2026 competition for the
+// match to count as a national-team match. League clubs (La Liga,
+// Premier, Libertadores) never trigger the cohesion branch.
+async function isNationalTeamMatch(homeClubId, awayClubId) {
+  const r = await query(
+    `SELECT COUNT(*)::int AS count
+     FROM clubs c
+     JOIN competitions comp ON comp.id = c.competition_id
+     WHERE comp.slug = 'world_cup_2026'
+       AND c.id IN ($1, $2)`,
+    [homeClubId, awayClubId]
+  );
+  return r.rows[0].count === 2;
 }
 
 function formatPrediction(homeTeam, awayTeam, raw, cached) {
