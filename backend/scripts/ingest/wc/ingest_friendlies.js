@@ -65,6 +65,23 @@ async function resolveTeamClub(apiName, competitionId, cache) {
       : (await query("INSERT INTO countries (name) VALUES ($1) RETURNING id", [canon])).rows[0].id;
   }
 
+  // Prefer a row that ya existe en world_cup_2026: ese id es el "primary"
+  // de la seleccion y tiene los fixtures del Mundial. Crear un duplicado en
+  // internationals_2026 rompe el modelo cohesion y obliga a re-consolidar
+  // cada vez que corre el cron. Si la seleccion no clasifico al Mundial,
+  // caemos al insert clasico en internationals_2026.
+  const existing = await query(
+    `SELECT c.id FROM clubs c
+     JOIN competitions comp ON comp.id = c.competition_id
+     WHERE c.name = $1 AND comp.slug = 'world_cup_2026'
+     LIMIT 1`,
+    [canon]
+  );
+  if (existing.rows.length > 0) {
+    cache.set(canon, existing.rows[0].id);
+    return existing.rows[0].id;
+  }
+
   const club = await query(
     `INSERT INTO clubs (name, short_name, league, country_id, competition_id)
      VALUES ($1, $2, $3, $4, $5)

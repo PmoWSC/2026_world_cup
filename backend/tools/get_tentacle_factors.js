@@ -68,7 +68,8 @@ async function areBothNationalTeams(homeId, awayId) {
   const r = await query(
     `SELECT COUNT(*)::int AS count
      FROM clubs c JOIN competitions comp ON comp.id = c.competition_id
-     WHERE comp.slug = 'world_cup_2026' AND c.id IN ($1, $2)`,
+     WHERE comp.slug IN ('world_cup_2026', 'internationals_2026')
+       AND c.id IN ($1, $2)`,
     [homeId, awayId]
   );
   return r.rows[0].count === 2;

@@ -52,11 +52,15 @@ async function predict(homeClubId, awayClubId) {
 // to find the country and from there the players whose nationality_id
 // points at it.
 async function resolveNationalTeam(clubId) {
+  // Accept both world_cup_2026 (qualified national teams) and
+  // internationals_2026 (non-qualified opponents that still play
+  // friendlies, e.g. Chile). The name of the row IS the country.
   const r = await query(
     `SELECT c.name AS country_name
      FROM clubs c
      JOIN competitions comp ON comp.id = c.competition_id
-     WHERE c.id = $1 AND comp.slug = 'world_cup_2026'`,
+     WHERE c.id = $1
+       AND comp.slug IN ('world_cup_2026', 'internationals_2026')`,
     [clubId]
   );
   return r.rows.length > 0 ? r.rows[0].country_name : null;

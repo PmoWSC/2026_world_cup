@@ -92,15 +92,17 @@ async function predictMatch(homeTeam, awayTeam) {
   return formatPrediction(homeTeam, awayTeam, computed, false);
 }
 
-// Both teams have to live in the world_cup_2026 competition for the
-// match to count as a national-team match. League clubs (La Liga,
-// Premier, Libertadores) never trigger the cohesion branch.
+// Both teams have to be national teams (registered in world_cup_2026 or
+// internationals_2026) for the match to trigger the cohesion + tentacle
+// branch. League clubs (La Liga, Premier, Libertadores) never qualify.
+// We accept internationals_2026 too because some sides (e.g. Chile) play
+// friendlies without having qualified to the World Cup.
 async function isNationalTeamMatch(homeClubId, awayClubId) {
   const r = await query(
     `SELECT COUNT(*)::int AS count
      FROM clubs c
      JOIN competitions comp ON comp.id = c.competition_id
-     WHERE comp.slug = 'world_cup_2026'
+     WHERE comp.slug IN ('world_cup_2026', 'internationals_2026')
        AND c.id IN ($1, $2)`,
     [homeClubId, awayClubId]
   );
