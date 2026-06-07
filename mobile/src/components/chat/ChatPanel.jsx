@@ -36,6 +36,7 @@ export default function ChatPanel() {
     sendMessage,
     isLoading,
     remainingMessages,
+    dailyLimit,
     resetAt,
     isAuthenticated,
     showRegistrationPrompt,
@@ -71,13 +72,14 @@ export default function ChatPanel() {
   const isEmpty = messages.length === 0;
   const isRateLimited = remainingMessages === 0;
 
-  // Counter label
+  // Counter label. Always show the limit returned by the backend (not a
+  // hardcoded constant): if the user's session expired and the server is
+  // treating them as anonymous, the limit comes back as 5 even though the
+  // frontend still has them as authenticated. Trust the backend.
   const counterLabel = (() => {
-    if (remainingMessages == null) return null;
-    if (isAuthenticated) {
-      return `🐙 ${remainingMessages} of 20 daily questions left`;
-    }
-    return `🐙 ${remainingMessages}/5 free questions left`;
+    if (remainingMessages == null || dailyLimit == null) return null;
+    const noun = isAuthenticated && dailyLimit > 5 ? 'daily' : 'free';
+    return `🐙 ${remainingMessages} of ${dailyLimit} ${noun} questions left`;
   })();
 
   return (

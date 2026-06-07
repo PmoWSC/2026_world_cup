@@ -21,6 +21,7 @@ export function useAuth() {
   function resetChatCounter() {
     const store = useChatStore.getState();
     store.setRemainingMessages(null);
+    store.setDailyLimit(null);
     store.setResetAt(null);
   }
 

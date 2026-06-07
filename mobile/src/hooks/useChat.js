@@ -9,6 +9,7 @@ export function useChat() {
   const {
     messages,
     remainingMessages,
+    dailyLimit,
     isLoading,
     sessionId,
     resetAt,
@@ -16,6 +17,7 @@ export function useChat() {
     addMessage,
     setLoading,
     setRemainingMessages,
+    setDailyLimit,
     setResetAt,
     setShowRegistrationPrompt,
   } = useChatStore();
@@ -48,6 +50,10 @@ export function useChat() {
             setRemainingMessages(reply.remaining_messages);
           }
 
+          if (reply.daily_limit != null) {
+            setDailyLimit(reply.daily_limit);
+          }
+
           if (reply.reset_at) {
             setResetAt(reply.reset_at);
           }
@@ -67,7 +73,7 @@ export function useChat() {
         setLoading(false);
       }
     },
-    [chatMutate, sessionId, i18n.language, isAuthenticated, addMessage, setLoading, setRemainingMessages, setResetAt, setShowRegistrationPrompt],
+    [chatMutate, sessionId, i18n.language, isAuthenticated, addMessage, setLoading, setRemainingMessages, setDailyLimit, setResetAt, setShowRegistrationPrompt],
   );
 
   const dismissRegistrationPrompt = useCallback(() => {
@@ -79,6 +85,7 @@ export function useChat() {
     sendMessage,
     isLoading,
     remainingMessages,
+    dailyLimit,
     resetAt,
     isAuthenticated,
     showRegistrationPrompt,

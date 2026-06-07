@@ -67,6 +67,7 @@ const chatResolvers = {
           message: "",
           visualization: null,
           remaining_messages: 0,
+          daily_limit: rateResult.limit,
           reset_at: rateResult.reset_at,
         };
       }
@@ -151,6 +152,7 @@ const chatResolvers = {
           message: textMessage,
           visualization,
           remaining_messages: rateResult.remaining,
+          daily_limit: rateResult.limit,
           reset_at: rateResult.reset_at,
         };
       } catch (err) {
@@ -160,6 +162,7 @@ const chatResolvers = {
             "Pulpo's tentacles are tangled right now. Please try again in a moment.",
           visualization: null,
           remaining_messages: rateResult.remaining,
+          daily_limit: rateResult.limit,
           reset_at: rateResult.reset_at,
         };
       }

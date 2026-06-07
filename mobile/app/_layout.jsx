@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "../src/apollo/client";
 import { useDisclaimer } from "../src/hooks/useDisclaimer";
 import { useAuthStore } from "../src/store/authStore";
+import { useChatStore } from "../src/store/chatStore";
 import DisclaimerModal from "../src/components/DisclaimerModal";
 import "../src/i18n/i18n";
 
@@ -16,18 +17,22 @@ export default function RootLayout() {
   const { loading: disclaimerLoading, accepted, accept } = useDisclaimer();
   const authHydrated = useAuthStore((s) => s.hydrated);
   const hydrateAuth = useAuthStore((s) => s.hydrate);
+  const chatHydrated = useChatStore((s) => s.hydrated);
+  const hydrateChat = useChatStore((s) => s.hydrate);
 
-  // Restore auth (token + refreshToken + user) from SecureStore on cold
-  // start. Without this, every app launch sent the user back to Login even
-  // if they had registered minutes before.
+  // Restore auth (token + refreshToken + user) and the persistent sessionId
+  // from SecureStore on cold start. Without these, every app launch reset
+  // both the login AND the anonymous rate-limit counter — so closing/
+  // reopening the app gave the user 5 fresh free questions.
   useEffect(() => {
     hydrateAuth();
-  }, [hydrateAuth]);
+    hydrateChat();
+  }, [hydrateAuth, hydrateChat]);
 
-  // While reading SecureStore (disclaimer or auth): the native splash stays
-  // up. Returning null is fast (<10ms typically) and prevents a Stack mount
-  // that would have to be unmounted right after.
-  if (disclaimerLoading || !authHydrated) {
+  // While reading SecureStore (disclaimer + auth + chat session): the
+  // native splash stays up. Returning null is fast (<10ms typically) and
+  // prevents a Stack mount that would have to be unmounted right after.
+  if (disclaimerLoading || !authHydrated || !chatHydrated) {
     return null;
   }
 

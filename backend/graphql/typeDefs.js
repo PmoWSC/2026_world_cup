@@ -93,6 +93,7 @@ const typeDefs = gql`
     message: String!
     visualization: Visualization
     remaining_messages: Int!
+    daily_limit: Int!
     reset_at: String
   }
 

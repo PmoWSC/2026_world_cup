@@ -9,6 +9,7 @@ export const CHAT_MUTATION = gql`
         data
       }
       remaining_messages
+      daily_limit
       reset_at
     }
   }
