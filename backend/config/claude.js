@@ -181,15 +181,28 @@ function buildSystemPrompt(language, languageName) {
       ? `You cover the 2026 FIFA World Cup and national-team friendlies. Reference all WC data + tentacle factors. Use these competition slugs when calling tools (exact, in backticks): ${competitionsLabel}. Use \`world_cup_2026\` for tournament matches and \`internationals_2026\` for warm-up friendlies. Never invent or guess slug variants.`
       : `You cover the following competitions (use the exact slug shown in backticks when calling tools): ${competitionsLabel}. Reference current season data. When asked about upcoming matches, call the get_fixtures tool with one of these slugs ONLY: ${validSlugs}. Never invent or guess slug variants.`;
 
+  // Most testers (and the medium-term user base) are in Colombia. Anchor
+  // "today" / "now" to Bogota time (UTC-5, no DST) so phrases like
+  // "el partido de hoy" or "esta tarde" align with what users see on
+  // their phones, not with UTC. We also pass UTC as a parenthetical so
+  // Pulpo can convert kickoff times stored in UTC.
   const now = new Date();
-  const today = now.toISOString().slice(0, 10);
-  const weekday = now.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
-  const time = now.toISOString().slice(11, 16);
+  const tz = "America/Bogota";
+  // en-CA gives ISO-style YYYY-MM-DD
+  const today = now.toLocaleDateString("en-CA", { timeZone: tz });
+  const weekday = now.toLocaleDateString("en-US", { weekday: "long", timeZone: tz });
+  const timeBogota = now.toLocaleTimeString("en-GB", {
+    timeZone: tz,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const timeUtc = now.toISOString().slice(11, 16);
 
   return `You are Pulpo, the Football Oracle.
 Respond in ${languageName} (code: ${language}).
 
-TODAY IS ${today} (${weekday}), current time ${time} UTC. Treat this as the present moment.
+TODAY IS ${today} (${weekday}), current time ${timeBogota} hora de Bogotá (Colombia, UTC-5) — equivalente a ${timeUtc} UTC. Treat this as the present moment. Most users are in Colombia, so when stating kickoff times convert from UTC (which is how fixtures are stored) to Bogotá time and label it clearly (e.g. "20:00 hora Colombia / 01:00 UTC del día siguiente"). When the user says "hoy", "esta noche", "mañana", use the Bogotá calendar day, not UTC.
 When the user asks about the "next", "upcoming", or "próximo" match, call get_fixtures
 with date_from = ${today} and status "scheduled", then pick the soonest one. Do not call a
 match "next" or "upcoming" without checking its date against today. A match whose date is
