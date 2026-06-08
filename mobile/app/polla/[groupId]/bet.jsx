@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { GET_FIXTURES } from '../../../src/apollo/queries';
+import { GET_FIXTURES, GET_MY_BETS } from '../../../src/apollo/queries';
 import { PLACE_BET } from '../../../src/apollo/mutations';
 import { colors, gradients } from '../../../src/styles/colors';
 import { fonts } from '../../../src/styles/typography';
@@ -69,7 +69,9 @@ export default function BetScreen() {
 
   const countdown = useCountdown(fixture.matchDate);
 
-  const [placeBet, { loading }] = useMutation(PLACE_BET);
+  const [placeBet, { loading }] = useMutation(PLACE_BET, {
+    refetchQueries: [{ query: GET_MY_BETS, variables: { groupId } }],
+  });
 
   const handleConfirm = async () => {
     try {

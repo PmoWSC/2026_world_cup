@@ -6,7 +6,6 @@ import {
   FlatList,
   Pressable,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@apollo/client';
@@ -62,20 +61,7 @@ export default function PollaScreen() {
   };
 
   const handleJoinPool = () => {
-    Alert.prompt(
-      t('polla.join_pool_title', { defaultValue: 'Join a Pool' }),
-      t('polla.join_pool_message', {
-        defaultValue: 'Enter the invite code to join a pool.',
-      }),
-      (code) => {
-        if (code && code.trim()) {
-          router.push(`/polla/join?code=${encodeURIComponent(code.trim())}`);
-        }
-      },
-      'plain-text',
-      '',
-      'default',
-    );
+    router.push('/polla/join');
   };
 
   if (!isAuthenticated) {

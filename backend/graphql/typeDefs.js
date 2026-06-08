@@ -41,6 +41,7 @@ const typeDefs = gql`
     myPollaGroups: [PollaGroup!]!
     pollaGroup(id: ID!): PollaGroup
     pollaLeaderboard(groupId: ID!): [LeaderboardEntry!]!
+    myBets(groupId: ID!): [PollaBet!]!
     betTypes: [BetType!]!
   }
 
@@ -318,6 +319,7 @@ const typeDefs = gql`
     userId: ID!
     betType: BetType!
     fixtureId: ID
+    fixture: Fixture
     prediction: JSON!
     pointsEarned: Int!
     status: String!

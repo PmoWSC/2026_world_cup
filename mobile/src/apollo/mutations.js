@@ -105,10 +105,19 @@ export const PLACE_BET = gql`
     ) {
       id
       groupId
-      betTypeSlug
+      userId
       fixtureId
       prediction
+      pointsEarned
+      status
+      lockedAt
       createdAt
+      betType {
+        id
+        slug
+        category
+        pointsCorrect
+      }
     }
   }
 `;

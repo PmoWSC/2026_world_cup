@@ -13,12 +13,12 @@ import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { GET_POLLA_GROUPS, GET_LEADERBOARD, GET_FIXTURES } from '../../src/apollo/queries';
+import { GET_POLLA_GROUPS, GET_LEADERBOARD, GET_FIXTURES, GET_MY_BETS } from '../../src/apollo/queries';
 import { colors } from '../../src/styles/colors';
 import { fonts } from '../../src/styles/typography';
 import LeaderboardList from '../../src/components/polla/LeaderboardList';
 
-const TABS = ['Leaderboard', 'Upcoming'];
+const TABS = ['Leaderboard', 'Upcoming', 'My Bets'];
 
 function SegmentControl({ tabs, activeTab, onTabPress }) {
   return (
@@ -117,9 +117,11 @@ export default function GroupDetailScreen() {
   const leaderboardEntries = (lbData?.pollaLeaderboard ?? []).map((entry) => ({
     rank: entry.rank,
     displayName: entry.displayName,
-    avatarUrl: null,
-    totalPoints: entry.points,
-    exactPredictions: entry.correctPredictions,
+    avatarUrl: entry.avatarUrl,
+    totalPoints: entry.totalPoints,
+    exactPredictions: entry.exactPredictions,
+    partialPredictions: entry.partialPredictions,
+    totalResolved: entry.totalResolved,
   }));
 
   // Fixtures for upcoming
@@ -129,8 +131,13 @@ export default function GroupDetailScreen() {
   });
   const upcomingFixtures = fixturesData?.fixtures ?? [];
 
-  // User bets -- placeholder array; replace with real query when available
-  const userBets = [];
+  // User bets in this group
+  const { data: betsData, loading: betsLoading } = useQuery(GET_MY_BETS, {
+    variables: { groupId },
+    skip: activeTab !== 'My Bets',
+    fetchPolicy: 'cache-and-network',
+  });
+  const userBets = betsData?.myBets ?? [];
 
   const handleShare = async () => {
     try {
@@ -215,11 +222,18 @@ export default function GroupDetailScreen() {
     }
 
     // My Bets
+    if (betsLoading && userBets.length === 0) {
+      return (
+        <View style={styles.centered}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      );
+    }
     if (userBets.length === 0) {
       return (
         <View style={styles.centered}>
           <Text style={styles.emptyText}>
-            {t('polla.no_bets', { defaultValue: 'No predictions yet.' })}
+            {t('polla.no_bets', { defaultValue: 'No predictions yet. Go to Upcoming to make one.' })}
           </Text>
         </View>
       );
@@ -230,17 +244,33 @@ export default function GroupDetailScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.fixtureList}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.betRow}>
-            <View style={styles.betInfo}>
-              <Text style={styles.betMatch}>
-                {item.homeTeam?.name ?? item.homeTeam ?? 'Home'} vs {item.awayTeam?.name ?? item.awayTeam ?? 'Away'}
-              </Text>
-              <Text style={styles.betPrediction}>{item.prediction}</Text>
+        renderItem={({ item }) => {
+          const fx = item.fixture ?? {};
+          const homeName = fx.homeTeam?.name ?? 'Home';
+          const awayName = fx.awayTeam?.name ?? 'Away';
+          const pred = item.prediction ?? {};
+          const predHome = pred.home_score ?? '-';
+          const predAway = pred.away_score ?? '-';
+          const fxResolved = fx.status === 'finished';
+          const actualScore = fxResolved
+            ? `${fx.homeScore ?? '-'}-${fx.awayScore ?? '-'}`
+            : null;
+          return (
+            <View style={styles.betRow}>
+              <View style={styles.betInfo}>
+                <Text style={styles.betMatch}>
+                  {homeName} vs {awayName}
+                </Text>
+                <Text style={styles.betPrediction}>
+                  {`Your pick: ${predHome}-${predAway}`}
+                  {actualScore ? `  ·  Final: ${actualScore}` : ''}
+                  {item.pointsEarned > 0 ? `  ·  +${item.pointsEarned} pts` : ''}
+                </Text>
+              </View>
+              <StatusBadge status={item.status} />
             </View>
-            <StatusBadge status={item.status} />
-          </View>
-        )}
+          );
+        }}
       />
     );
   };

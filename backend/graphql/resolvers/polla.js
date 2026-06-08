@@ -70,6 +70,84 @@ const pollaResolvers = {
         isActive: row.is_active,
       }));
     },
+
+    async myBets(_parent, { groupId }, context) {
+      const user = requireAuth(context);
+      const result = await query(
+        `SELECT pb.*, bt.slug AS bt_slug, bt.name_key AS bt_name_key,
+                bt.description_key AS bt_desc_key, bt.category AS bt_category,
+                bt.points_correct AS bt_points_correct,
+                bt.points_partial AS bt_points_partial,
+                bt.is_active AS bt_is_active
+         FROM polla_bets pb
+         JOIN bet_types bt ON bt.id = pb.bet_type_id
+         WHERE pb.group_id = $1 AND pb.user_id = $2
+         ORDER BY pb.created_at DESC`,
+        [groupId, user.id]
+      );
+      return result.rows.map((row) => ({
+        id: row.id,
+        groupId: row.group_id,
+        userId: row.user_id,
+        fixtureId: row.fixture_id,
+        prediction: row.prediction,
+        pointsEarned: row.points_earned,
+        status: row.status,
+        lockedAt: row.locked_at,
+        createdAt: row.created_at,
+        betType: {
+          id: row.bet_type_id,
+          slug: row.bt_slug,
+          nameKey: row.bt_name_key,
+          descriptionKey: row.bt_desc_key,
+          category: row.bt_category,
+          pointsCorrect: row.bt_points_correct,
+          pointsPartial: row.bt_points_partial,
+          isActive: row.bt_is_active,
+        },
+      }));
+    },
+  },
+
+  // Resolver del campo fixture en PollaBet — carga lazy via fixtureId.
+  // Solo se ejecuta si el cliente lo pide en su query.
+  PollaBet: {
+    async fixture(parent) {
+      if (!parent.fixtureId) return null;
+      const result = await query(
+        `SELECT f.id, f.competition_id, f.matchday, f.group_name, f.stage,
+                f.match_date, f.status,
+                f.home_score, f.away_score,
+                f.halftime_home_score, f.halftime_away_score,
+                ht.id AS ht_id, ht.name AS ht_name, ht.short_name AS ht_short, ht.crest_url AS ht_crest,
+                at.id AS at_id, at.name AS at_name, at.short_name AS at_short, at.crest_url AS at_crest,
+                c.id AS c_id, c.slug AS c_slug, c.name AS c_name, c.type AS c_type, c.season AS c_season
+         FROM fixtures f
+         LEFT JOIN clubs ht ON ht.id = f.home_team_id
+         LEFT JOIN clubs at ON at.id = f.away_team_id
+         LEFT JOIN competitions c ON c.id = f.competition_id
+         WHERE f.id = $1`,
+        [parent.fixtureId]
+      );
+      if (result.rows.length === 0) return null;
+      const row = result.rows[0];
+      return {
+        id: row.id,
+        matchday: row.matchday,
+        groupName: row.group_name,
+        stage: row.stage,
+        matchDate: row.match_date,
+        status: row.status,
+        homeScore: row.home_score,
+        awayScore: row.away_score,
+        halftimeHomeScore: row.halftime_home_score,
+        halftimeAwayScore: row.halftime_away_score,
+        homeTeam: row.ht_id ? { id: row.ht_id, name: row.ht_name, shortName: row.ht_short, crestUrl: row.ht_crest } : null,
+        awayTeam: row.at_id ? { id: row.at_id, name: row.at_name, shortName: row.at_short, crestUrl: row.at_crest } : null,
+        competition: row.c_id ? { id: row.c_id, slug: row.c_slug, name: row.c_name, type: row.c_type, season: row.c_season } : null,
+        venue: null,
+      };
+    },
   },
 
   Mutation: {

@@ -106,15 +106,52 @@ export const GET_POLLA_GROUPS = gql`
   }
 `;
 
+export const GET_MY_BETS = gql`
+  query GetMyBets($groupId: ID!) {
+    myBets(groupId: $groupId) {
+      id
+      fixtureId
+      prediction
+      pointsEarned
+      status
+      createdAt
+      betType {
+        slug
+        category
+        pointsCorrect
+      }
+      fixture {
+        id
+        matchDate
+        status
+        homeScore
+        awayScore
+        homeTeam {
+          id
+          name
+          shortName
+        }
+        awayTeam {
+          id
+          name
+          shortName
+        }
+      }
+    }
+  }
+`;
+
 export const GET_LEADERBOARD = gql`
   query GetLeaderboard($groupId: ID!) {
     pollaLeaderboard(groupId: $groupId) {
       userId
       displayName
-      points
+      avatarUrl
+      totalPoints
+      exactPredictions
+      partialPredictions
+      totalResolved
       rank
-      correctPredictions
-      totalPredictions
     }
   }
 `;
