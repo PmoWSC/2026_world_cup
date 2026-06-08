@@ -100,9 +100,12 @@ export default function GroupDetailScreen() {
 
   const [activeTab, setActiveTab] = useState('Leaderboard');
 
-  // Fetch group info from cache (already loaded in list)
+  // Fetch group info. cache-first was leaving group.competition undefined
+  // on a fresh navigate from Create Pool (refetchQueries hadn't landed yet),
+  // which made the Upcoming tab skip the fixtures query entirely and show
+  // "No upcoming fixtures" even when there are 10 scheduled.
   const { data: groupsData } = useQuery(GET_POLLA_GROUPS, {
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
   });
   const group = groupsData?.myPollaGroups?.find((g) => g.id === groupId) ?? {};
 
