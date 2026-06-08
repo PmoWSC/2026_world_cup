@@ -21,9 +21,11 @@ import { colors, gradients } from '../../src/styles/colors';
 import { fonts } from '../../src/styles/typography';
 
 const COMPETITIONS = [
+  { id: 'world_cup_2026', label: 'World Cup 2026' },
+  { id: 'internationals_2026', label: 'Internationals' },
+  { id: 'libertadores_2026', label: 'Copa Libertadores' },
   { id: 'la_liga_2025', label: 'La Liga' },
   { id: 'premier_league_2025', label: 'Premier League' },
-  { id: 'libertadores_2026', label: 'Copa Libertadores' },
 ];
 
 export default function CreatePollaScreen() {
@@ -78,7 +80,7 @@ export default function CreatePollaScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { paddingTop: insets.top }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -202,11 +204,12 @@ const styles = StyleSheet.create({
   },
   competitionRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     marginBottom: 36,
   },
   competitionCard: {
-    flex: 1,
+    width: '47%',
     backgroundColor: colors.surfaceContainerHigh,
     borderRadius: 12,
     paddingVertical: 20,
