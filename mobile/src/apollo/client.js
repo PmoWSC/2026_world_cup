@@ -42,8 +42,19 @@ function isAuthError(graphQLErrors, networkError) {
   return graphQLErrors.some((err) => {
     const code = err.extensions?.code;
     if (code === 'UNAUTHENTICATED' || code === 'UNAUTHORIZED') return true;
+    // Different resolvers throw slightly different strings: "Authentication
+    // required" (polla resolver), "not authenticated", "invalid token", etc.
+    // We match permissively so any of them triggers a silent token refresh
+    // instead of bubbling up as an Alert to the user.
     const msg = (err.message || '').toLowerCase();
-    return msg.includes('invalid token') || msg.includes('not authenticated') || msg.includes('unauthorized');
+    return (
+      msg.includes('authentication required') ||
+      msg.includes('not authenticated') ||
+      msg.includes('invalid token') ||
+      msg.includes('unauthorized') ||
+      msg.includes('jwt expired') ||
+      msg.includes('token expired')
+    );
   });
 }
 
