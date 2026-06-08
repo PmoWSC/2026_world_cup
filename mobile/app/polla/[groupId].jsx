@@ -121,7 +121,7 @@ export default function GroupDetailScreen() {
 
   // Fixtures for upcoming
   const { data: fixturesData, loading: fixturesLoading } = useQuery(GET_FIXTURES, {
-    variables: { competition: group.competition, status: 'SCHEDULED', limit: 20 },
+    variables: { competition: group.competition, status: 'scheduled', limit: 20 },
     skip: activeTab !== 'Upcoming' || !group.competition,
   });
   const upcomingFixtures = fixturesData?.fixtures ?? [];
