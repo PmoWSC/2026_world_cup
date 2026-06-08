@@ -198,7 +198,7 @@ export default function GroupDetailScreen() {
               ]}
             >
               <Text style={styles.fixtureTeams}>
-                {item.homeTeam} vs {item.awayTeam}
+                {item.homeTeam?.name ?? item.homeTeam ?? 'Home'} vs {item.awayTeam?.name ?? item.awayTeam ?? 'Away'}
               </Text>
               <Text style={styles.fixtureDate}>
                 {item.matchDate ? new Date(Number(item.matchDate)).toLocaleDateString() : ''}
@@ -234,7 +234,7 @@ export default function GroupDetailScreen() {
           <View style={styles.betRow}>
             <View style={styles.betInfo}>
               <Text style={styles.betMatch}>
-                {item.homeTeam} vs {item.awayTeam}
+                {item.homeTeam?.name ?? item.homeTeam ?? 'Home'} vs {item.awayTeam?.name ?? item.awayTeam ?? 'Away'}
               </Text>
               <Text style={styles.betPrediction}>{item.prediction}</Text>
             </View>

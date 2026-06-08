@@ -30,13 +30,27 @@ export const GET_FIXTURES = gql`
       limit: $limit
     ) {
       id
-      homeTeam
-      awayTeam
+      homeTeam {
+        id
+        name
+        shortName
+        crestUrl
+      }
+      awayTeam {
+        id
+        name
+        shortName
+        crestUrl
+      }
       homeScore
       awayScore
       status
       matchDate
-      competition
+      competition {
+        id
+        slug
+        name
+      }
       matchday
     }
   }

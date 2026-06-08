@@ -105,13 +105,13 @@ export default function BetScreen() {
         {/* Fixture Header */}
         <View style={styles.fixtureHeader}>
           <View style={styles.teamBlock}>
-            <Text style={styles.teamName}>{fixture.homeTeam ?? 'Home'}</Text>
+            <Text style={styles.teamName}>{fixture.homeTeam?.name ?? fixture.homeTeam ?? 'Home'}</Text>
           </View>
 
           <Text style={styles.vsText}>VS</Text>
 
           <View style={styles.teamBlock}>
-            <Text style={styles.teamName}>{fixture.awayTeam ?? 'Away'}</Text>
+            <Text style={styles.teamName}>{fixture.awayTeam?.name ?? fixture.awayTeam ?? 'Away'}</Text>
           </View>
         </View>
 
@@ -146,7 +146,7 @@ export default function BetScreen() {
           <ScoreStepper
             value={homeScore}
             onChange={setHomeScore}
-            label={fixture.homeTeam ?? 'Home'}
+            label={fixture.homeTeam?.name ?? fixture.homeTeam ?? 'Home'}
           />
           <View style={styles.stepperDivider}>
             <Text style={styles.dashText}>-</Text>
@@ -154,7 +154,7 @@ export default function BetScreen() {
           <ScoreStepper
             value={awayScore}
             onChange={setAwayScore}
-            label={fixture.awayTeam ?? 'Away'}
+            label={fixture.awayTeam?.name ?? fixture.awayTeam ?? 'Away'}
           />
         </View>
 
