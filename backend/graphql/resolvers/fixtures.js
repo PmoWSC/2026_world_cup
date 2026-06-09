@@ -8,13 +8,17 @@ const fixtureResolvers = {
                f.halftime_home_score, f.halftime_away_score, f.status,
                comp.id as comp_id, comp.name as comp_name, comp.slug as comp_slug, comp.type as comp_type, comp.season,
                v.id as venue_id, v.name as venue_name, v.city as venue_city, v.country as venue_country, v.capacity as venue_capacity,
-               ht.id as home_id, ht.name as home_name, ht.short_name as home_short, ht.crest_url as home_crest,
-               at2.id as away_id, at2.name as away_name, at2.short_name as away_short, at2.crest_url as away_crest
+               ht.id as home_id, ht.name as home_name, ht.short_name as home_short,
+               COALESCE(NULLIF(ht.crest_url, ''), ht_co.flag_url) as home_crest,
+               at2.id as away_id, at2.name as away_name, at2.short_name as away_short,
+               COALESCE(NULLIF(at2.crest_url, ''), at_co.flag_url) as away_crest
         FROM fixtures f
         LEFT JOIN competitions comp ON comp.id = f.competition_id
         LEFT JOIN venues v ON v.id = f.venue_id
         LEFT JOIN clubs ht ON ht.id = f.home_team_id
         LEFT JOIN clubs at2 ON at2.id = f.away_team_id
+        LEFT JOIN countries ht_co ON ht_co.id = ht.country_id
+        LEFT JOIN countries at_co ON at_co.id = at2.country_id
         WHERE 1=1
       `;
       const params = [];
@@ -56,19 +60,47 @@ const fixtureResolvers = {
       return result.rows.map(mapFixtureRow);
     },
 
+    async fixture(_parent, { id }) {
+      const result = await query(
+        `SELECT f.id, f.matchday, f.group_name, f.stage, f.match_date, f.home_score, f.away_score,
+                f.halftime_home_score, f.halftime_away_score, f.status,
+                comp.id as comp_id, comp.name as comp_name, comp.slug as comp_slug, comp.type as comp_type, comp.season,
+                v.id as venue_id, v.name as venue_name, v.city as venue_city, v.country as venue_country, v.capacity as venue_capacity,
+                ht.id as home_id, ht.name as home_name, ht.short_name as home_short,
+                COALESCE(NULLIF(ht.crest_url, ''), ht_co.flag_url) as home_crest,
+                at2.id as away_id, at2.name as away_name, at2.short_name as away_short,
+                COALESCE(NULLIF(at2.crest_url, ''), at_co.flag_url) as away_crest
+         FROM fixtures f
+         LEFT JOIN competitions comp ON comp.id = f.competition_id
+         LEFT JOIN venues v ON v.id = f.venue_id
+         LEFT JOIN clubs ht ON ht.id = f.home_team_id
+         LEFT JOIN clubs at2 ON at2.id = f.away_team_id
+         LEFT JOIN countries ht_co ON ht_co.id = ht.country_id
+         LEFT JOIN countries at_co ON at_co.id = at2.country_id
+         WHERE f.id = $1`,
+        [id]
+      );
+      if (result.rows.length === 0) return null;
+      return mapFixtureRow(result.rows[0]);
+    },
+
     async liveScores(_parent, { competition }) {
       let sql = `
         SELECT f.id, f.matchday, f.group_name, f.stage, f.match_date, f.home_score, f.away_score,
                f.halftime_home_score, f.halftime_away_score, f.status,
                comp.id as comp_id, comp.name as comp_name, comp.slug as comp_slug, comp.type as comp_type, comp.season,
                v.id as venue_id, v.name as venue_name, v.city as venue_city, v.country as venue_country, v.capacity as venue_capacity,
-               ht.id as home_id, ht.name as home_name, ht.short_name as home_short, ht.crest_url as home_crest,
-               at2.id as away_id, at2.name as away_name, at2.short_name as away_short, at2.crest_url as away_crest
+               ht.id as home_id, ht.name as home_name, ht.short_name as home_short,
+               COALESCE(NULLIF(ht.crest_url, ''), ht_co.flag_url) as home_crest,
+               at2.id as away_id, at2.name as away_name, at2.short_name as away_short,
+               COALESCE(NULLIF(at2.crest_url, ''), at_co.flag_url) as away_crest
         FROM fixtures f
         LEFT JOIN competitions comp ON comp.id = f.competition_id
         LEFT JOIN venues v ON v.id = f.venue_id
         LEFT JOIN clubs ht ON ht.id = f.home_team_id
         LEFT JOIN clubs at2 ON at2.id = f.away_team_id
+        LEFT JOIN countries ht_co ON ht_co.id = ht.country_id
+        LEFT JOIN countries at_co ON at_co.id = at2.country_id
         WHERE f.status IN ('IN_PLAY', 'PAUSED', 'HALFTIME')
       `;
       const params = [];

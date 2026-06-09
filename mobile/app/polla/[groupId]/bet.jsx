@@ -6,6 +6,7 @@ import {
   Pressable,
   Alert,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useMutation, useQuery } from '@apollo/client';
@@ -14,8 +15,43 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { GET_FIXTURES, GET_MY_BETS } from '../../../src/apollo/queries';
+import { GET_FIXTURE, GET_MY_BETS } from '../../../src/apollo/queries';
 import { PLACE_BET } from '../../../src/apollo/mutations';
+
+function TeamCrest({ url, name }) {
+  if (url) {
+    return <Image source={{ uri: url }} style={crestStyles.image} resizeMode="contain" />;
+  }
+  // Fallback: first 2 letters of team name as a monogram
+  const initials = (name ?? '').trim().slice(0, 2).toUpperCase();
+  return (
+    <View style={crestStyles.placeholder}>
+      <Text style={crestStyles.initials}>{initials}</Text>
+    </View>
+  );
+}
+
+const crestStyles = StyleSheet.create({
+  image: {
+    width: 56,
+    height: 56,
+    marginBottom: 8,
+  },
+  placeholder: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#1a1a1a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  initials: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+});
 import { colors, gradients } from '../../../src/styles/colors';
 import { fonts } from '../../../src/styles/typography';
 import ScoreStepper from '../../../src/components/polla/ScoreStepper';
@@ -60,12 +96,18 @@ export default function BetScreen() {
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
 
-  // Fetch fixture details
-  const { data: fixturesData } = useQuery(GET_FIXTURES, {
-    variables: { limit: 50 },
-    fetchPolicy: 'cache-first',
+  // Fetch this specific fixture. Using GET_FIXTURE(id) avoids the prior
+  // approach of pulling a list of 50 and hoping the one we want was in it.
+  const { data: fixtureData } = useQuery(GET_FIXTURE, {
+    variables: { id: fixtureId },
+    fetchPolicy: 'cache-and-network',
+    skip: !fixtureId,
   });
-  const fixture = fixturesData?.fixtures?.find((f) => f.id === fixtureId) ?? {};
+  const fixture = fixtureData?.fixture ?? {};
+  const homeName = fixture.homeTeam?.name ?? 'Home';
+  const awayName = fixture.awayTeam?.name ?? 'Away';
+  const homeCrest = fixture.homeTeam?.crestUrl;
+  const awayCrest = fixture.awayTeam?.crestUrl;
 
   const countdown = useCountdown(fixture.matchDate);
 
@@ -107,13 +149,15 @@ export default function BetScreen() {
         {/* Fixture Header */}
         <View style={styles.fixtureHeader}>
           <View style={styles.teamBlock}>
-            <Text style={styles.teamName}>{fixture.homeTeam?.name ?? fixture.homeTeam ?? 'Home'}</Text>
+            <TeamCrest url={homeCrest} name={homeName} />
+            <Text style={styles.teamName} numberOfLines={2}>{homeName}</Text>
           </View>
 
           <Text style={styles.vsText}>VS</Text>
 
           <View style={styles.teamBlock}>
-            <Text style={styles.teamName}>{fixture.awayTeam?.name ?? fixture.awayTeam ?? 'Away'}</Text>
+            <TeamCrest url={awayCrest} name={awayName} />
+            <Text style={styles.teamName} numberOfLines={2}>{awayName}</Text>
           </View>
         </View>
 
@@ -148,7 +192,7 @@ export default function BetScreen() {
           <ScoreStepper
             value={homeScore}
             onChange={setHomeScore}
-            label={fixture.homeTeam?.name ?? fixture.homeTeam ?? 'Home'}
+            label={homeName}
           />
           <View style={styles.stepperDivider}>
             <Text style={styles.dashText}>-</Text>
@@ -156,7 +200,7 @@ export default function BetScreen() {
           <ScoreStepper
             value={awayScore}
             onChange={setAwayScore}
-            label={fixture.awayTeam?.name ?? fixture.awayTeam ?? 'Away'}
+            label={awayName}
           />
         </View>
 

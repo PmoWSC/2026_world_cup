@@ -119,12 +119,16 @@ const pollaResolvers = {
                 f.match_date, f.status,
                 f.home_score, f.away_score,
                 f.halftime_home_score, f.halftime_away_score,
-                ht.id AS ht_id, ht.name AS ht_name, ht.short_name AS ht_short, ht.crest_url AS ht_crest,
-                at.id AS at_id, at.name AS at_name, at.short_name AS at_short, at.crest_url AS at_crest,
+                ht.id AS ht_id, ht.name AS ht_name, ht.short_name AS ht_short,
+                COALESCE(NULLIF(ht.crest_url, ''), ht_co.flag_url) AS ht_crest,
+                at.id AS at_id, at.name AS at_name, at.short_name AS at_short,
+                COALESCE(NULLIF(at.crest_url, ''), at_co.flag_url) AS at_crest,
                 c.id AS c_id, c.slug AS c_slug, c.name AS c_name, c.type AS c_type, c.season AS c_season
          FROM fixtures f
          LEFT JOIN clubs ht ON ht.id = f.home_team_id
          LEFT JOIN clubs at ON at.id = f.away_team_id
+         LEFT JOIN countries ht_co ON ht_co.id = ht.country_id
+         LEFT JOIN countries at_co ON at_co.id = at.country_id
          LEFT JOIN competitions c ON c.id = f.competition_id
          WHERE f.id = $1`,
         [parent.fixtureId]

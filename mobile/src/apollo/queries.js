@@ -106,6 +106,37 @@ export const GET_POLLA_GROUPS = gql`
   }
 `;
 
+export const GET_FIXTURE = gql`
+  query GetFixture($id: ID!) {
+    fixture(id: $id) {
+      id
+      matchDate
+      status
+      homeScore
+      awayScore
+      matchday
+      homeTeam {
+        id
+        name
+        shortName
+        crestUrl
+      }
+      awayTeam {
+        id
+        name
+        shortName
+        crestUrl
+      }
+      competition {
+        id
+        slug
+        name
+        type
+      }
+    }
+  }
+`;
+
 export const GET_MY_BETS = gql`
   query GetMyBets($groupId: ID!) {
     myBets(groupId: $groupId) {

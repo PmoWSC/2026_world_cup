@@ -16,6 +16,7 @@ const typeDefs = gql`
       limit: Int
     ): [Fixture!]!
     liveScores(competition: String): [Fixture!]!
+    fixture(id: ID!): Fixture
 
     # Players
     players(
