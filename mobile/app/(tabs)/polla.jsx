@@ -12,6 +12,7 @@ import { useQuery } from '@apollo/client';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/hooks/useAuth';
 import { GET_POLLA_GROUPS } from '../../src/apollo/queries';
 import { colors, gradients } from '../../src/styles/colors';
@@ -81,6 +82,12 @@ export default function PollaScreen() {
         <Text style={styles.title}>
           {t('polla.my_pools', { defaultValue: 'MY POOLS' })}
         </Text>
+        <Pressable onPress={handleJoinPool} style={styles.joinHeaderBtn}>
+          <Ionicons name="enter-outline" size={18} color={colors.primary} />
+          <Text style={styles.joinHeaderText}>
+            {t('polla.join_with_code', { defaultValue: 'Join with code' })}
+          </Text>
+        </Pressable>
       </View>
 
       {loading && groups.length === 0 ? (
@@ -137,6 +144,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: fonts.spaceGroteskBold,
@@ -144,6 +154,23 @@ const styles = StyleSheet.create({
     color: colors.onSurface,
     textTransform: 'uppercase',
     letterSpacing: 2,
+  },
+  joinHeaderBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.primaryAlpha10,
+    backgroundColor: colors.surfaceContainerHigh,
+  },
+  joinHeaderText: {
+    fontFamily: fonts.lexendMedium,
+    fontSize: 12,
+    color: colors.primary,
+    letterSpacing: 1,
   },
   // --- List ---
   listContent: {
