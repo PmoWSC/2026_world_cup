@@ -251,7 +251,7 @@ const pollaResolvers = {
         id: bet.id,
         groupId: bet.group_id,
         userId: bet.user_id,
-        betType,
+        betType: mapBetType(betType),
         fixtureId: bet.fixture_id,
         prediction: bet.prediction,
         pointsEarned: bet.points_earned,
@@ -289,11 +289,21 @@ const pollaResolvers = {
       );
 
       const updated = result.rows[0];
+
+      // Load the full bet_type row so we can populate the non-nullable
+      // BetType fields (pointsCorrect, slug, category, ...) in the
+      // returned PollaBet.
+      const btResult = await query(
+        "SELECT * FROM bet_types WHERE id = $1",
+        [updated.bet_type_id]
+      );
+      const betType = btResult.rows[0];
+
       return {
         id: updated.id,
         groupId: updated.group_id,
         userId: updated.user_id,
-        betType: { slug: bet.bet_type_id },
+        betType: mapBetType(betType),
         fixtureId: updated.fixture_id,
         prediction: updated.prediction,
         pointsEarned: updated.points_earned,
@@ -321,6 +331,20 @@ function generateInviteCode() {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return code;
+}
+
+function mapBetType(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    slug: row.slug,
+    nameKey: row.name_key,
+    descriptionKey: row.description_key,
+    category: row.category,
+    pointsCorrect: row.points_correct,
+    pointsPartial: row.points_partial,
+    isActive: row.is_active,
+  };
 }
 
 function mapGroupRow(row) {
