@@ -205,9 +205,17 @@ export default function GroupDetailScreen() {
                 pressed && { opacity: 0.8 },
               ]}
             >
-              <Text style={styles.fixtureTeams}>
-                {item.homeTeam?.name ?? item.homeTeam ?? 'Home'} vs {item.awayTeam?.name ?? item.awayTeam ?? 'Away'}
-              </Text>
+              <View style={styles.fixtureTeamsRow}>
+                {item.homeTeam?.crestUrl ? (
+                  <Image source={{ uri: item.homeTeam.crestUrl }} style={styles.miniCrest} resizeMode="contain" />
+                ) : null}
+                <Text style={styles.fixtureTeams} numberOfLines={1}>
+                  {item.homeTeam?.name ?? 'Home'} vs {item.awayTeam?.name ?? 'Away'}
+                </Text>
+                {item.awayTeam?.crestUrl ? (
+                  <Image source={{ uri: item.awayTeam.crestUrl }} style={styles.miniCrest} resizeMode="contain" />
+                ) : null}
+              </View>
               <Text style={styles.fixtureDate}>
                 {item.matchDate ? new Date(Number(item.matchDate)).toLocaleDateString() : ''}
               </Text>
@@ -416,6 +424,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 10,
+  },
+  fixtureTeamsRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   fixtureTeams: {
     flex: 1,
