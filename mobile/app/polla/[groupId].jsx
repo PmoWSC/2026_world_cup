@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   Share,
+  Image,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@apollo/client';
@@ -248,6 +249,8 @@ export default function GroupDetailScreen() {
           const fx = item.fixture ?? {};
           const homeName = fx.homeTeam?.name ?? 'Home';
           const awayName = fx.awayTeam?.name ?? 'Away';
+          const homeCrest = fx.homeTeam?.crestUrl;
+          const awayCrest = fx.awayTeam?.crestUrl;
           const pred = item.prediction ?? {};
           const predHome = pred.home_score ?? '-';
           const predAway = pred.away_score ?? '-';
@@ -258,9 +261,17 @@ export default function GroupDetailScreen() {
           return (
             <View style={styles.betRow}>
               <View style={styles.betInfo}>
-                <Text style={styles.betMatch}>
-                  {homeName} vs {awayName}
-                </Text>
+                <View style={styles.matchupRow}>
+                  {homeCrest ? (
+                    <Image source={{ uri: homeCrest }} style={styles.miniCrest} resizeMode="contain" />
+                  ) : null}
+                  <Text style={styles.betMatch} numberOfLines={1}>
+                    {homeName} vs {awayName}
+                  </Text>
+                  {awayCrest ? (
+                    <Image source={{ uri: awayCrest }} style={styles.miniCrest} resizeMode="contain" />
+                  ) : null}
+                </View>
                 <Text style={styles.betPrediction}>
                   {`Your pick: ${predHome}-${predAway}`}
                   {actualScore ? `  ·  Final: ${actualScore}` : ''}
@@ -431,11 +442,21 @@ const styles = StyleSheet.create({
   betInfo: {
     flex: 1,
   },
+  matchupRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  miniCrest: {
+    width: 18,
+    height: 18,
+  },
   betMatch: {
     fontFamily: fonts.lexend,
     fontSize: 14,
     color: colors.onSurface,
-    marginBottom: 2,
+    flexShrink: 1,
   },
   betPrediction: {
     fontFamily: fonts.spaceGroteskBold,

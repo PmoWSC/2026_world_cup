@@ -161,11 +161,13 @@ export const GET_MY_BETS = gql`
           id
           name
           shortName
+          crestUrl
         }
         awayTeam {
           id
           name
           shortName
+          crestUrl
         }
       }
     }
