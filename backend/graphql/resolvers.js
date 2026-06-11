@@ -44,17 +44,18 @@ const JSONScalar = new GraphQLScalarType({
 });
 
 function mergeResolvers(...resolverSets) {
-  const merged = { Query: {}, Mutation: {} };
-
+  // Generic merge: copy every type's field-resolvers (Query, Mutation,
+  // and ALSO any type-specific resolver like PollaBet, Fixture, ...).
+  // The previous implementation only copied Query and Mutation, so any
+  // field resolver attached to a type (e.g. PollaBet.fixture) was
+  // silently discarded — clients always saw null for that field.
+  const merged = {};
   for (const resolvers of resolverSets) {
-    if (resolvers.Query) {
-      Object.assign(merged.Query, resolvers.Query);
-    }
-    if (resolvers.Mutation) {
-      Object.assign(merged.Mutation, resolvers.Mutation);
+    for (const [typeName, fieldResolvers] of Object.entries(resolvers)) {
+      if (!merged[typeName]) merged[typeName] = {};
+      Object.assign(merged[typeName], fieldResolvers);
     }
   }
-
   return merged;
 }
 
