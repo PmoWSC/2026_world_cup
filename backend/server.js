@@ -80,8 +80,8 @@ try {
       express.json(),
       expressMiddleware(server, {
         context: async ({ req }) => {
-          const user = extractUser(req);
-          return { user };
+          const { user, tokenInvalid } = extractUser(req);
+          return { user, tokenInvalid };
         },
       })
     );

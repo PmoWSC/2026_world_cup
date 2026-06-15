@@ -55,6 +55,15 @@ async function saveMessage(sessionId, role, content) {
 const chatResolvers = {
   Mutation: {
     async chat(_parent, { message, language = "en", sessionId }, context) {
+      // If the client sent a Bearer header but it failed to verify, do NOT
+      // silently treat the user as anonymous — that would burn their 5
+      // anonymous quota while the UI still believes they are authenticated.
+      // Surface a clean auth error so the Apollo error link can refresh
+      // the access token and retry transparently.
+      if (context.tokenInvalid) {
+        throw new Error("Authentication required");
+      }
+
       const isAnonymous = !context.user;
       const identifier = isAnonymous ? sessionId : context.user.id;
       if (!identifier) {
