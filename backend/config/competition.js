@@ -5,6 +5,7 @@ const COMPETITION_MODES = {
       "premier_league_2025",
       "libertadores_2026",
       "internationals_2026",
+      "world_cup_2026",
     ],
     features: ["chat", "predictions", "polla", "explore"],
     tentacles_enabled: false,
