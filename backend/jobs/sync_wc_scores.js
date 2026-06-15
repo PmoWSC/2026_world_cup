@@ -1,9 +1,25 @@
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 const { Pool } = require("pg");
-const { fetchOpenfootball } = require("../scripts/ingest/wc/fetch_openfootball");
 const { THIRD_PLACE_NUMBER, FINAL_NUMBER } = require("../scripts/ingest/wc/wc_transform");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+// Direct fetch — we don't want the cache side-effect that
+// fetchOpenfootball() does (it writes to data/wc2026/worldcup.json,
+// which doesn't have write permission inside the running container
+// and would silently fall back to a stale cache without scores).
+const OPENFOOTBALL_URL =
+  "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
+
+async function fetchScheduleLive() {
+  const res = await fetch(OPENFOOTBALL_URL);
+  if (!res.ok) throw new Error(`openfootball HTTP ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data.matches)) {
+    throw new Error("openfootball returned unexpected shape: missing matches[]");
+  }
+  return data;
+}
 
 // openfootball publishes group-stage results without a stable per-match
 // number, so we rederive the number with the SAME ordering used at
@@ -52,7 +68,7 @@ async function syncWcScores() {
   }
   const competitionId = compRes.rows[0].id;
 
-  const data = await fetchOpenfootball();
+  const data = await fetchScheduleLive();
   const updates = buildScoreUpdates(data.matches);
   console.log(`[WC SCORES] ${updates.length} matches with scores in source`);
 
