@@ -268,7 +268,7 @@ RULES:
 // just returned "Pulpo's tentacles are tangled". Make the model
 // configurable so the same failure mode is fixable from the droplet
 // without redeploying.
-const CHAT_MODEL = process.env.CLAUDE_CHAT_MODEL || "claude-sonnet-4-6";
+const CHAT_MODEL = process.env.CLAUDE_CHAT_MODEL || "claude-haiku-4-5";
 
 async function chat(messages, language = "en", languageName = "English") {
   const systemPrompt = buildSystemPrompt(language, languageName);
