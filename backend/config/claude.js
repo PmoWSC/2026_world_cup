@@ -262,11 +262,19 @@ RULES:
 - If a user asks about something outside your data scope, say so honestly.`;
 }
 
+// Override via env in case Anthropic deprecates again. The previous
+// hardcoded "claude-sonnet-4-20250514" started returning 404 in June
+// 2026 and silently broke every chat — the catch block in the resolver
+// just returned "Pulpo's tentacles are tangled". Make the model
+// configurable so the same failure mode is fixable from the droplet
+// without redeploying.
+const CHAT_MODEL = process.env.CLAUDE_CHAT_MODEL || "claude-sonnet-4-6";
+
 async function chat(messages, language = "en", languageName = "English") {
   const systemPrompt = buildSystemPrompt(language, languageName);
 
   const response = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: CHAT_MODEL,
     max_tokens: 4096,
     system: systemPrompt,
     tools: TOOL_DEFINITIONS,
