@@ -79,12 +79,14 @@ const TOOL_DEFINITIONS = [
   {
     name: "get_fixtures",
     description:
-      "Get upcoming or past fixtures filtered by competition, team, date range, or status. " +
-      "Each row also includes time_status (computed from match_date and current time): " +
-      "'live' (server confirmed in-play), 'likely_live' (kickoff was within the last 2 hours but no final score yet — most likely playing right now), " +
+      "Get fixtures filtered by competition, team, date range, or status. " +
+      "Each row includes a computed time_status field that is more reliable than the raw status: " +
+      "'live' (confirmed in-play), 'likely_live' (kickoff was within the last 2 hours, no final score yet — most likely playing right now), " +
       "'finished' (final score available), 'upcoming' (kickoff is in the future). " +
-      "When the user asks 'what's playing now' / 'qué partido se está jugando ahora', look for rows with time_status='live' or 'likely_live'; " +
-      "report 'likely_live' transparently — say it started ~N minutes ago but the final score isn't available yet.",
+      "IMPORTANT — when the user asks 'what is playing now' / 'qué partido se está jugando': " +
+      "DO NOT pass status='IN_PLAY' or status='live' — that filters by the raw DB column and misses 'likely_live' matches. " +
+      "Instead, call get_fixtures with date_from = today (Bogotá), no status filter, and look at time_status on each row. " +
+      "Report any 'live' or 'likely_live' rows; for 'likely_live' say transparently the match started ~N minutes ago (use seconds_since_kickoff / 60) and the final score isn't published yet.",
     input_schema: {
       type: "object",
       properties: {
