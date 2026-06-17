@@ -9,6 +9,20 @@ const FOOTBALL_DATA_KEY = process.env.FOOTBALL_DATA_API_KEY;
 async function syncLiveScores() {
   console.log(`[SYNC] Checking live scores at ${new Date().toISOString()}`);
 
+  // Garbage-collect stale live states. sync_live_scores only fetches the
+  // CURRENT day's fixtures, so any match left in IN_PLAY/PAUSED/HALFTIME
+  // from a previous day's run never gets closed by this job and sticks
+  // around forever — Pulpo then reports it as "live now" weeks later.
+  // 4 hours after kickoff a match is definitely no longer in play.
+  const gc = await pool.query(
+    `UPDATE fixtures SET status = 'finished', updated_at = NOW()
+       WHERE status IN ('IN_PLAY', 'PAUSED', 'HALFTIME')
+         AND match_date < NOW() - INTERVAL '4 hours'`
+  );
+  if (gc.rowCount > 0) {
+    console.log(`[SYNC] Garbage-collected ${gc.rowCount} stale live states`);
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   const url = `${FOOTBALL_DATA_BASE}/matches?dateFrom=${today}&dateTo=${today}`;
 
