@@ -1,0 +1,63 @@
+{
+  "tabs": {
+    "chat": "Chat",
+    "polla": "Polla"
+  },
+  "chat": {
+    "placeholder": "Pergunte ao Pulpo qualquer coisa sobre futebol...",
+    "send": "Enviar",
+    "thinking": "Pulpo est\u00e1 pensando...",
+    "welcome_title": "Bem-vindo ao Pulpo.ai",
+    "welcome_subtitle": "Seu assistente de intelig\u00eancia futebol\u00edstica com IA para a Copa do Mundo 2026",
+    "rate_limit_prefix": "Voc\u00ea tem",
+    "rate_limit_exhausted": "Voc\u00ea atingiu o limite de mensagens. Tente novamente mais tarde."
+  },
+  "polla": {
+    "title": "Polla",
+    "coming_soon": "Em Breve",
+    "create_group": "Criar Grupo",
+    "join_group": "Entrar no Grupo",
+    "leaderboard": "Classifica\u00e7\u00e3o",
+    "place_bet": "Fazer Previs\u00e3o",
+    "confirm_prediction": "Confirmar Previs\u00e3o",
+    "invite": "Convidar Amigos"
+  },
+  "settings": {
+    "title": "Configura\u00e7\u00f5es",
+    "language": "Idioma",
+    "logout": "Sair",
+    "about": "Sobre",
+    "version": "Vers\u00e3o",
+    "powered_by": "Desenvolvido por Pulpo.ai"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Algo deu errado",
+    "retry": "Tentar Novamente",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar"
+  },
+  "errors": {
+    "network": "Erro de rede. Verifique sua conex\u00e3o.",
+    "auth_required": "Fa\u00e7a login para continuar.",
+    "rate_limited": "Muitas solicita\u00e7\u00f5es. Aguarde um momento.",
+    "unknown": "Ocorreu um erro inesperado."
+  },
+  "predictions": {
+    "probability": "Probabilidade",
+    "home_win": "Vit\u00f3ria Mandante",
+    "draw": "Empate",
+    "away_win": "Vit\u00f3ria Visitante",
+    "model_breakdown": "Detalhamento do Modelo"
+  },
+  "quick_chips": {
+    "live_simulations": "Simula\u00e7\u00f5es ao Vivo",
+    "historical_bias": "Vi\u00e9s Hist\u00f3rico",
+    "player_stats": "Estat\u00edsticas de Jogadores",
+    "upcoming_matches": "Pr\u00f3ximos Jogos",
+    "league_standings": "Tabela do Campeonato"
+  }
+}

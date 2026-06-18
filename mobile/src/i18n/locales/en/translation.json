@@ -1,0 +1,72 @@
+{
+  "tabs": {
+    "chat": "Chat",
+    "polla": "Polla"
+  },
+  "chat": {
+    "placeholder": "Ask Pulpo anything about football...",
+    "send": "Send",
+    "thinking": "Pulpo is thinking...",
+    "welcome_title": "Welcome to Pulpo.ai",
+    "welcome_subtitle": "Your AI-powered football intelligence assistant for the 2026 World Cup",
+    "rate_limit_prefix": "You have",
+    "rate_limit_exhausted": "You've reached the message limit. Please try again later."
+  },
+  "polla": {
+    "title": "Polla",
+    "coming_soon": "Coming Soon",
+    "create_group": "Create Group",
+    "join_group": "Join Group",
+    "leaderboard": "Leaderboard",
+    "place_bet": "Place Prediction",
+    "confirm_prediction": "Confirm Prediction",
+    "invite": "Invite Friends"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "logout": "Log Out",
+    "about": "About",
+    "version": "Version",
+    "powered_by": "Powered by Pulpo.ai"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back"
+  },
+  "errors": {
+    "network": "Network error. Check your connection.",
+    "auth_required": "Please log in to continue.",
+    "rate_limited": "Too many requests. Please wait a moment.",
+    "unknown": "An unexpected error occurred."
+  },
+  "predictions": {
+    "probability": "Probability",
+    "home_win": "Home Win",
+    "draw": "Draw",
+    "away_win": "Away Win",
+    "model_breakdown": "Model Breakdown"
+  },
+  "quick_chips": {
+    "live_simulations": "Live Simulations",
+    "historical_bias": "Historical Bias",
+    "player_stats": "Player Stats",
+    "upcoming_matches": "Upcoming Matches",
+    "league_standings": "League Standings"
+  },
+  "disclaimer": {
+    "title": "Important",
+    "intro": "Pulpo.ai produces probabilistic predictions about sports events based on historical data, market value, recent form, and other quantitative factors. We do not guarantee outcomes. Predictions are an analytical and entertainment tool — a means, not a result.",
+    "noBetting": "Pulpo.ai is not a betting platform and does not facilitate money transactions or economic incentives. The \"polla\" among friends is a playful scoring system.",
+    "noLiability": "We are not liable for any wagers, bets, or financial decisions made by users based on the app's responses. Use this information at your own risk.",
+    "consent": "By continuing, you accept these terms and our",
+    "privacyLink": "privacy policy",
+    "acceptCta": "I agree"
+  }
+}

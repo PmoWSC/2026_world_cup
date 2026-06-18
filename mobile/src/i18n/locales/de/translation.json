@@ -1,0 +1,63 @@
+{
+  "tabs": {
+    "chat": "Chat",
+    "polla": "Polla"
+  },
+  "chat": {
+    "placeholder": "Frag Pulpo alles \u00fcber Fu\u00dfball...",
+    "send": "Senden",
+    "thinking": "Pulpo denkt nach...",
+    "welcome_title": "Willkommen bei Pulpo.ai",
+    "welcome_subtitle": "Dein KI-gest\u00fctzter Fu\u00dfball-Intelligenz-Assistent f\u00fcr die WM 2026",
+    "rate_limit_prefix": "Du hast noch",
+    "rate_limit_exhausted": "Du hast das Nachrichtenlimit erreicht. Versuche es sp\u00e4ter erneut."
+  },
+  "polla": {
+    "title": "Polla",
+    "coming_soon": "Demnächst verfügbar",
+    "create_group": "Gruppe erstellen",
+    "join_group": "Gruppe beitreten",
+    "leaderboard": "Rangliste",
+    "place_bet": "Vorhersage abgeben",
+    "confirm_prediction": "Vorhersage best\u00e4tigen",
+    "invite": "Freunde einladen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "logout": "Abmelden",
+    "about": "\u00dcber",
+    "version": "Version",
+    "powered_by": "Betrieben von Pulpo.ai"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "confirm": "Best\u00e4tigen",
+    "save": "Speichern",
+    "close": "Schlie\u00dfen",
+    "back": "Zur\u00fcck"
+  },
+  "errors": {
+    "network": "Netzwerkfehler. \u00dcberpr\u00fcfe deine Verbindung.",
+    "auth_required": "Bitte melde dich an, um fortzufahren.",
+    "rate_limited": "Zu viele Anfragen. Bitte warte einen Moment.",
+    "unknown": "Ein unerwarteter Fehler ist aufgetreten."
+  },
+  "predictions": {
+    "probability": "Wahrscheinlichkeit",
+    "home_win": "Heimsieg",
+    "draw": "Unentschieden",
+    "away_win": "Ausw\u00e4rtssieg",
+    "model_breakdown": "Modellaufschl\u00fcsselung"
+  },
+  "quick_chips": {
+    "live_simulations": "Live-Simulationen",
+    "historical_bias": "Historische Tendenz",
+    "player_stats": "Spielerstatistiken",
+    "upcoming_matches": "Kommende Spiele",
+    "league_standings": "Tabellenstand"
+  }
+}

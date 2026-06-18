@@ -1,0 +1,59 @@
+# Overlay de produccion. Uso esperado en el Droplet:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Diferencias vs el compose dev:
+# - Postgres SIN puerto al host (solo red interna de Docker).
+# - Backend bindeado a 127.0.0.1 (Caddy en el host hara reverse proxy con TLS).
+# - Healthchecks robustos en ambos servicios.
+# - restart: unless-stopped.
+# - Resource limits ajustados a Droplet 2GB / 1 vCPU.
+# - Log rotation (json-file 10mb x 3) para no llenar el disco.
+
+services:
+  postgres:
+    # Override completo del bloque ports para REMOVER la exposicion al host.
+    # En prod, postgres solo es accesible desde la red interna de Docker.
+    ports: !reset []
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.5"
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    # !override: el dev compose bindea 0.0.0.0:4000; aqui solo localhost.
+    # Caddy en el host hara reverse proxy con TLS hacia 127.0.0.1:4000.
+    ports: !override
+      - "127.0.0.1:4000:4000"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:4000/healthz',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.5"
+        reservations:
+          memory: 128M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

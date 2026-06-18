@@ -1,0 +1,77 @@
+# PULPO.ai — Caddy reverse proxy
+#
+# Copy to /etc/caddy/Caddyfile on the Droplet and reload:
+#   sudo cp infra/Caddyfile.example /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy
+#
+# Caddy obtains and renews TLS certificates automatically from Let's Encrypt
+# as long as the A record for pulpo.white-systems.com points to this server's
+# public IP and ports 80 + 443 are open (UFW does that in setup-droplet.sh).
+
+pulpo.white-systems.com {
+	encode gzip
+
+	# Public liveness probe (uptime monitors point here).
+	handle /healthz {
+		reverse_proxy 127.0.0.1:4000
+	}
+
+	# GraphQL endpoint. The mobile app POSTs here.
+	handle /graphql {
+		reverse_proxy 127.0.0.1:4000
+	}
+
+	# Static privacy policy. David hosts privacy.html (or privacy/index.html)
+	# under /var/www/pulpo. The disclaimer modal links here.
+	handle /privacy {
+		root * /var/www/pulpo
+		try_files {path} {path}.html /privacy.html
+		file_server
+	}
+	handle /privacy/* {
+		root * /var/www/pulpo
+		file_server
+	}
+
+	# Guia para testers del beta (TestFlight). El link se comparte
+	# con los amigos invitados a probar la app.
+	handle /testers {
+		root * /var/www/pulpo
+		try_files {path} {path}.html /testers.html
+		file_server
+	}
+
+	# Assets compartidos por las paginas estaticas (logos, etc.).
+	# La privacy y la testers guide los referencian.
+	handle /user_manual/* {
+		root * /var/www/pulpo
+		file_server
+	}
+
+	# Default: opaque 404. We do not expose anything else.
+	handle {
+		respond "Not Found" 404
+	}
+
+	# Access + error log with rotation. Caddy creates the file with the right
+	# ownership if /var/log/caddy is writable by the caddy user (setup script
+	# makes that directory).
+	log {
+		output file /var/log/caddy/pulpo.log {
+			roll_size 10mb
+			roll_keep 5
+			roll_keep_for 720h
+		}
+		format json
+	}
+
+	# Security headers. The backend also sets these via Helmet, but
+	# reinforcing at the edge is cheap and defensive.
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		# Hide Caddy server header.
+		-Server
+	}
+}

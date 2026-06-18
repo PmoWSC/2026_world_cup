@@ -1,0 +1,44 @@
+{
+  "cli": {
+    "version": ">= 12.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://localhost:4000/graphql",
+        "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
+      }
+    },
+    "preview": {
+      "distribution": "store",
+      "ios": {
+        "simulator": false
+      },
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://pulpo.white-systems.com/graphql",
+        "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://pulpo.white-systems.com/graphql",
+        "EXPO_PUBLIC_COMPETITION_MODE": "league_demo",
+        "EXPO_PUBLIC_DEFAULT_LANGUAGE": "es"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6770881894"
+      }
+    }
+  }
+}
