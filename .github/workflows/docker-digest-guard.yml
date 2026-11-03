@@ -1,0 +1,35 @@
+# Falla si algún Dockerfile o archivo compose referencia una imagen por etiqueta
+# sin digest (@sha256:...). Las etapas de build (FROM deps AS builder) y las
+# imágenes construidas localmente (sin ':' ni '/') se permiten.
+name: Imágenes base fijadas por digest
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop, staging]
+
+jobs:
+  digest-guard:
+    name: Imágenes base fijadas por digest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Buscar referencias sin digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(git ls-files | grep -E '(^|/)(Dockerfile[^/]*|docker-compose[^/]*\.ya?ml|compose[^/]*\.ya?ml)$' || true)
+          if [ -z "$files" ]; then echo "sin Dockerfiles ni archivos compose"; exit 0; fi
+          bad=0
+          for f in $files; do
+            while IFS= read -r line; do
+              ref=$(printf '%s' "$line" | sed -E 's/^[[:space:]]*(FROM[[:space:]]+(--platform=[^[:space:]]+[[:space:]]+)?|image:[[:space:]]*)//; s/["'"'"']//g; s/[[:space:]]+(AS|as)[[:space:]]+.*$//; s/[[:space:]]*#.*$//; s/[[:space:]]+$//')
+              case "$ref" in
+                *@sha256:*) ;;
+                *:*|*/*) echo "::error file=$f::imagen sin digest: $ref"; bad=1 ;;
+                *) ;;
+              esac
+            done < <(grep -E '^[[:space:]]*(FROM[[:space:]]|image:[[:space:]])' "$f" || true)
+          done
+          if [ "$bad" = 0 ]; then echo "todas las imágenes base tienen digest"; fi
+          exit "$bad"
